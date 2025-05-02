@@ -1,0 +1,156 @@
+/* Contact Page Styles */
+.contact-content {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  gap: 40px;
+}
+
+.contact-info,
+.contact-form {
+  flex: 1;
+  min-width: 300px;
+}
+
+/* Contact Info Section */
+.contact-info h2 {
+  font-size: 36px;
+  margin-bottom: 25px;
+  color: #090969;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.contact-info h2:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 80px;
+  height: 3px;
+  background-color: #090969;
+}
+
+.contact-info > p {
+  font-size: 17px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.contact-details {
+  margin-top: 30px;
+}
+
+.contact-item {
+  display: flex;
+  margin-bottom: 25px;
+  align-items: flex-start;
+}
+
+.contact-item i {
+  font-size: 22px;
+  color: #090969;
+  margin-right: 15px;
+  margin-top: 5px;
+}
+
+.contact-item h4 {
+  font-size: 18px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.contact-item p {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Contact Form Section */
+.contact-form h3 {
+  font-size: 24px;
+  margin-bottom: 25px;
+  color: #090969;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  transition: border 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #090969;
+}
+
+.contact-form button {
+  background-color: #090969;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.contact-form button:hover {
+  background-color: white;
+  color: #090969;
+  outline: 2px solid #090969;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .contact-content {
+    padding: 25px;
+    margin: 30px 15px;
+  }
+
+  .contact-info h2 {
+    font-size: 28px;
+  }
+
+  .contact-info > p,
+  .contact-item p {
+    font-size: 15px;
+  }
+
+  .contact-form h3 {
+    font-size: 20px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    padding: 10px;
+  }
+
+  .contact-form button {
+    width: 100%;
+  }
+}
