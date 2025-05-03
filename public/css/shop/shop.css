@@ -8,10 +8,12 @@
   display: flex;
   gap: 40px;
   max-width: 1200px;
+  width: 100%;
   margin: auto;
   flex-wrap: wrap;
   align-items: flex-start; /* align filter and grid top */
   padding: 0 20px;
+  box-sizing: border-box;
 }
 
 /* Filters */
@@ -86,6 +88,7 @@
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 30px;
   order: 2;
+  width: 100%;
 }
 
 .product-card {
@@ -175,5 +178,55 @@
   .shop-container {
     flex-direction: row;
     flex-wrap: nowrap;
+  }
+}
+
+/* Responsive Product Grid */
+@media (min-width: 320px) and (max-width: 374px) {
+  .shop-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .product-card {
+    margin-bottom: 10px;
+  }
+}
+
+@media (min-width: 375px) and (max-width: 424px) {
+  .shop-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .product-card {
+    margin-bottom: 12px;
+  }
+}
+
+@media (min-width: 425px) and (max-width: 767px) {
+  .shop-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .product-card {
+    margin-bottom: 15px;
+  }
+}
+
+/* Tablet view */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .shop-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+/* Desktop view */
+@media (min-width: 1024px) {
+  .shop-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
   }
 }

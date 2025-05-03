@@ -1,22 +1,9 @@
-/* About Hero */
-.about-hero {
-  background: url('https://via.placeholder.com/1200x400?text=Urbanova+About') center/cover no-repeat;
-  height: 50vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-size: 48px;
-  font-weight: 700;
-  text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
-}
-
 /* About Content */
 .about-content {
   display: flex;
-  max-width: 800px;
+  max-width: 600px;
   margin: 60px auto;
-  padding: 40px;
+  padding: 30px 40px;
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0,0,0,0.1);
@@ -27,8 +14,8 @@
 }
 
 .about-text h2 {
-  font-size: 36px;
-  margin-bottom: 30px;
+  font-size: 32px;
+  margin-bottom: 25px;
   color: #090969;
   text-align: center;
   position: relative;
@@ -47,10 +34,10 @@
 }
 
 .about-text p {
-  font-size: 17px;
+  font-size: 16px;
   color: #555;
-  line-height: 1.8;
-  margin-bottom: 25px;
+  line-height: 1.7;
+  margin-bottom: 20px;
   text-align: justify;
 }
 
@@ -58,10 +45,18 @@
   margin-bottom: 0;
 }
 
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .about-content {
+    max-width: 80%;
+  }
+}
+
 @media (max-width: 768px) {
   .about-content {
-    padding: 25px;
-    margin: 30px 15px;
+    padding: 25px 30px;
+    margin: 30px auto;
+    max-width: 85%;
   }
 
   .about-text h2 {
@@ -69,17 +64,65 @@
   }
 
   .about-text p {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
-.about-image {
-  flex: 1;
-  min-width: 300px;
+@media (max-width: 425px) {
+  .about-content {
+    padding: 20px 25px;
+    margin: 20px auto;
+    max-width: 90%;
+  }
+
+  .about-text h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .about-text p {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 18px;
+  }
 }
 
-.about-image img {
-  width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+@media (max-width: 375px) {
+  .about-content {
+    padding: 15px 20px;
+    max-width: 92%;
+  }
+
+  .about-text h2 {
+    font-size: 22px;
+  }
+
+  .about-text p {
+    font-size: 13px;
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 320px) {
+  .about-content {
+    padding: 12px 15px;
+    margin: 15px auto;
+    max-width: 95%;
+  }
+
+  .about-text h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+  }
+
+  .about-text h2:after {
+    width: 60px;
+  }
+
+  .about-text p {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
 }
