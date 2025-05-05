@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Data Hak Akses')
+@section('title', 'Tambah Hak Akses')
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('css/admin/hakases/hakases.css') }}">
@@ -9,13 +9,13 @@
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h1>Edit Data Hak Akses</h1>
+            <h1>Tambah Hak Akses</h1>
         </div>
 
         <div class="section-body">
             <div class="card">
                 <div class="card-header">
-                    <h4>Form Edit User</h4>
+                    <h4>Form Tambah User</h4>
                 </div>
                 <div class="card-body">
                     @if ($errors->any())
@@ -28,39 +28,39 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('hakakses.update', $hakakses->id) }}" method="POST">
+                    <form action="{{ route('hakakses.store') }}" method="POST">
                         @csrf
-                        @method('PUT')
 
                         <div class="form-group">
                             <label for="name">Nama</label>
-                            <input type="text" name="name" id="name" class="form-control" value="{{ $hakakses->name }}" required>
+                            <input type="text" name="name" id="name" class="form-control" value="{{ old('name') }}" required>
                         </div>
 
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" name="email" id="email" class="form-control" value="{{ $hakakses->email }}" required>
+                            <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="password">Password (kosongkan jika tidak ingin mengubah)</label>
-                            <input type="password" name="password" id="password" class="form-control">
+                            <label for="password">Password</label>
+                            <input type="password" name="password" id="password" class="form-control" required>
                         </div>
 
                         <div class="form-group">
                             <label for="password_confirmation">Konfirmasi Password</label>
-                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control">
+                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required>
                         </div>
 
                         <div class="form-group">
                             <label for="role">Hak Akses</label>
                             <select name="role" id="role" class="form-control" required>
-                                <option value="admin" {{ $hakakses->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="user" {{ $hakakses->role == 'user' ? 'selected' : '' }}>User</option>
+                                <option value="">Pilih Hak Akses</option>
+                                <option value="admin">Admin</option>
+                                <option value="user">User</option>
                             </select>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
                         <a href="{{ route('hakakses.index') }}" class="btn btn-secondary">Kembali</a>
                     </form>
                 </div>

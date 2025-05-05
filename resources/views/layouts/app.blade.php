@@ -26,6 +26,9 @@
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <link rel="stylesheet" href="{{ asset('css/skins/reverse.css') }}">
 
+    <!-- Sidebar CSS -->
+    <link rel="stylesheet" href="{{ asset('css/sidebar/sidebar.css') }}">
+
     <!-- DataTables -->
     <link rel="stylesheet" href="{{ asset('library/datatables/media/css/jquery.dataTables.min.css') }}">
     {{-- <link rel="stylesheet" href="{{ asset('library/datatables/media/css/dataTables.bootstrap4.min.css') }}"> --}}
@@ -48,6 +51,8 @@
             <div class="main-content">
                 @yield('content')
             </div>
+
+            @include('components.sweet-alert')
         </div>
     </div>
 

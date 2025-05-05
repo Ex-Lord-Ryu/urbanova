@@ -1,0 +1,1237 @@
+/* Content Area */
+.main-content {
+    margin-left: 150px;
+    width: calc(100% - 150px);
+    transition: all 0.5s;
+}
+
+/* Product List Page Styling */
+.products-section {
+    position: relative;
+}
+
+.page-header-bg {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid #6777ef;
+}
+
+.products-title {
+    font-weight: 700;
+    color: #34395e;
+}
+
+.products-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card.total {
+    border-left: 4px solid #6777ef;
+}
+
+.stat-card.active {
+    border-left: 4px solid #47c363;
+}
+
+.stat-card.inactive {
+    border-left: 4px solid #fc544b;
+}
+
+.stat-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #6777ef;
+}
+
+.stat-card.active .stat-icon {
+    color: #47c363;
+}
+
+.stat-card.inactive .stat-icon {
+    color: #fc544b;
+}
+
+.stat-card h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.stat-card p {
+    color: #868e96;
+    margin-bottom: 0;
+}
+
+.products-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: none;
+    overflow: hidden;
+}
+
+.products-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #f1f1f1;
+    padding: 15px 20px;
+}
+
+.products-table {
+    margin-bottom: 0;
+}
+
+.products-table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8fafc;
+}
+
+.products-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.products-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.add-product-btn {
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-weight: 500;
+    box-shadow: 0 2px 6px rgba(103, 119, 239, 0.3);
+}
+
+.product-image {
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.product-image:hover {
+    transform: scale(1.1);
+}
+
+.product-status {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.product-status.active {
+    background-color: rgba(71, 195, 99, 0.1);
+    color: #47c363;
+}
+
+.product-status.inactive {
+    background-color: rgba(252, 84, 75, 0.1);
+    color: #fc544b;
+}
+
+.product-status.featured {
+    background-color: rgba(103, 119, 239, 0.1);
+    color: #6777ef;
+}
+
+.search-wrapper {
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    color: #6777ef;
+}
+
+/* Template Search Icon */
+.template-search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6777ef;
+    z-index: 10;
+}
+
+#searchProduct, #searchColor, #searchSize {
+    padding-left: 35px;
+    border-radius: 50px;
+    border: 1px solid #e4e6fc;
+    transition: all 0.3s ease;
+}
+
+#searchProduct:focus, #searchColor:focus, #searchSize:focus {
+    border-color: #6777ef;
+    box-shadow: 0 0 0 0.2rem rgba(103, 119, 239, .25);
+}
+
+/* Action Buttons */
+.action-buttons .btn {
+    border-radius: 4px;
+    width: auto;
+    height: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 2px;
+    transition: all 0.2s ease;
+    opacity: 0.85;
+    padding: 5px 10px;
+}
+
+.action-buttons .btn:hover {
+    transform: translateY(-3px);
+    opacity: 1;
+}
+
+.action-buttons .btn-info {
+    background-color: #3abaf4;
+    border-color: #3abaf4;
+}
+
+.action-buttons .btn-warning {
+    background-color: #ffa426;
+    border-color: #ffa426;
+}
+
+.action-buttons .btn-danger {
+    background-color: #fc544b;
+    border-color: #fc544b;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.empty-state img {
+    max-width: 150px;
+    margin-bottom: 15px;
+}
+
+.success-alert {
+    background-color: #ebf7ef;
+    border-color: #47c363;
+    color: #1e7e34;
+    border-radius: 10px;
+}
+
+.pagination-info .badge {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    font-weight: normal;
+    font-size: 12px;
+}
+
+.pagination-container {
+    margin-top: 20px;
+}
+
+.pagination-links .pagination {
+    margin-bottom: 0;
+}
+
+.pagination-links .page-item.active .page-link {
+    background-color: #6777ef;
+    border-color: #6777ef;
+}
+
+.pagination-links .page-link {
+    color: #6777ef;
+}
+
+.product-color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+/* Animation classes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+.product-details-title, .product-description-title {
+    font-weight: 600;
+    color: #34395e;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #f9f9f9;
+    padding-bottom: 10px;
+}
+
+.product-details-table td {
+    padding: 12px 15px;
+}
+
+.product-description {
+    line-height: 1.6;
+    color: #6c757d;
+}
+
+.product-main-image {
+    transition: all 0.3s ease;
+}
+
+.product-main-image img {
+    max-height: 300px;
+    object-fit: contain;
+}
+
+.form-switch-container {
+    background-color: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.form-actions {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #f1f1f1;
+}
+
+.selectgroup-button {
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* Custom File Input Styling */
+.file-input-container {
+    position: relative;
+    display: block;
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.file-input-field {
+    width: 100%;
+    padding: 8px 110px 8px 15px;
+    border: 1px solid #e4e6fc;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    color: #6c757d;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: default;
+    min-height: 42px;
+    line-height: 24px;
+}
+
+.file-input-field.has-file {
+    color: #34395e;
+}
+
+.file-input-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    background-color: #6777ef;
+    color: #fff;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.file-input-btn:hover {
+    background-color: #5a68d6;
+}
+
+.file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.file-preview {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.file-preview-item {
+    position: relative;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    width: 80px;
+    height: 80px;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.file-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.file-preview-remove {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    color: #fc544b;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+/* Enhanced Dropdown Styling */
+select.form-control {
+    height: 42px;
+    padding: 8px 12px;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 1px solid #e4e6fc;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+select.form-control:hover {
+    border-color: #6777ef;
+}
+
+select.form-control:focus {
+    border-color: #6777ef;
+    box-shadow: 0 0 0 0.2rem rgba(103, 119, 239, .25);
+}
+
+select.form-control option {
+    padding: 10px;
+}
+
+select.form-control option:hover,
+select.form-control option:focus,
+select.form-control option:active,
+select.form-control option:checked {
+    background-color: #f8f9fa;
+}
+
+/* Custom Color Selection */
+.color-options {
+    margin-top: 10px;
+}
+
+.color-input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.color-input-group .form-control {
+    margin-right: 10px;
+}
+
+.color-picker {
+    width: 60px;
+    height: 38px;
+    padding: 0 5px;
+    cursor: pointer;
+}
+
+.add-color-btn, .add-size-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    min-width: 80px;
+    padding: 0 15px;
+    background-color: #6777ef;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.add-color-btn:hover, .add-size-btn:hover {
+    background-color: #5a6bda;
+}
+
+.color-chips, .size-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.color-chip, .size-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    background-color: #f4f6f9;
+    border-radius: 50px;
+    border: 1px solid #e4e6fc;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.color-chip:hover, .size-chip:hover {
+    background-color: #eaeaea;
+}
+
+.chip-color-dot, .color-dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    margin-right: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.chip-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 6px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    color: #6777ef;
+}
+
+.chip-remove:hover {
+    color: #e3342f;
+}
+
+/* Size Selection */
+.size-input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.size-input-group .form-control {
+    margin-right: 10px;
+}
+
+/* Search Form */
+.search-form {
+    position: relative;
+}
+
+.search-form .form-control {
+    height: 42px;
+    border-radius: 25px;
+    padding-left: 20px;
+    padding-right: 45px;
+    border-color: #e4e6fc;
+}
+
+.search-form .form-control:focus {
+    border-color: #6777ef;
+    box-shadow: 0 0 0 0.2rem rgba(103, 119, 239, 0.25);
+}
+
+.search-form .search-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: #6777ef;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    /* Keep original styling for 1024px and 768px as specified */
+    .main-content {
+        margin-left: 0px;
+        width: calc(100% - 0px);
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0px;
+        width: calc(100% - 0px);
+    }
+
+    .products-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .card-header .form-group {
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .card-header .btn {
+        margin-top: 10px;
+    }
+
+    .color-input-group, .size-input-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .color-input-group .form-control,
+    .size-input-group .form-control {
+        width: 100%;
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+
+    .file-input-container {
+        width: 100%;
+    }
+
+    /* Description Templates improvements */
+    .template-card {
+        margin-bottom: 15px;
+    }
+
+    .template-search-form {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .template-filters {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .template-filters select {
+        width: 48%;
+    }
+
+    /* Keep action buttons horizontal - stronger override */
+    .action-buttons,
+    .template-actions,
+    .template-footer .template-actions {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        width: auto !important;
+    }
+
+    .action-buttons .btn,
+    .template-actions .btn,
+    .template-actions form,
+    .template-footer .template-actions .btn,
+    .template-footer .template-actions form {
+        margin: 0 2px !important;
+        width: auto !important;
+        display: inline-flex !important;
+        flex: 0 0 auto !important;
+    }
+
+    .template-footer {
+        flex-wrap: wrap !important;
+    }
+
+    .template-footer > div {
+        margin-bottom: 8px;
+    }
+}
+
+@media (max-width: 425px) {
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .products-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .products-table {
+        font-size: 14px;
+    }
+
+    .action-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    .product-image {
+        max-width: 50px;
+    }
+
+    /* Colors, Sizes, and Description Templates adjustments */
+    .table td, .table th {
+        padding: 10px 8px;
+    }
+
+    .pagination-links .page-link {
+        padding: 0.3rem 0.5rem;
+        font-size: 13px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+    }
+
+    .card-header h4 {
+        font-size: 18px;
+    }
+
+    .color-chip, .size-chip {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    .chip-color-dot, .color-dot {
+        width: 12px;
+        height: 12px;
+    }
+
+    .form-control {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    select.form-control {
+        height: 38px;
+    }
+
+    .color-options, .size-chips {
+        flex-wrap: wrap;
+    }
+
+    /* Description Templates improvements */
+    .template-header {
+        padding: 10px 12px;
+    }
+
+    .template-title {
+        font-size: 15px;
+    }
+
+    .template-body {
+        padding: 12px;
+    }
+
+    .template-meta {
+        font-size: 12px;
+    }
+
+    .template-content {
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
+
+    .template-footer {
+        padding: 8px 12px;
+        flex-wrap: wrap;
+    }
+
+    .template-tag {
+        font-size: 10px;
+        padding: 2px 6px;
+        margin-bottom: 5px;
+    }
+
+    .template-search-form .form-control {
+        height: 38px;
+    }
+
+    /* Fix for search template field */
+    .template-search-wrapper {
+        position: relative;
+        width: 100%;
+        display: block;
+    }
+
+    .template-search-input {
+        width: 100%;
+        position: static;
+        padding-left: 35px;
+    }
+
+    .template-search-icon {
+        left: 12px;
+    }
+
+    /* Fix for search and filter layout */
+    .template-search-filter-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .template-search-wrapper,
+    .template-filter-wrapper {
+        width: 100%;
+        position: static;
+        margin-bottom: 10px;
+    }
+
+    .template-search-input,
+    .template-filter-wrapper select {
+        width: 100%;
+    }
+
+    /* Fix for template filter bar */
+    .template-filter-bar {
+        flex-direction: column;
+    }
+
+    .template-filter-bar > div {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .template-filter-bar .d-flex {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .template-search {
+        width: 100% !important;
+        margin-right: 0 !important;
+        margin-bottom: 15px;
+    }
+
+    .template-filter-bar .form-group {
+        width: 100%;
+    }
+
+    #categoryFilter {
+        width: 100%;
+    }
+
+    /* Stronger override for action buttons */
+    .action-buttons,
+    .template-actions,
+    .template-footer .template-actions {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        width: auto !important;
+        margin-left: auto !important;
+    }
+
+    .action-buttons .btn,
+    .template-actions .btn,
+    .template-actions form,
+    .template-footer .template-actions .btn,
+    .template-footer .template-actions form {
+        margin: 0 2px !important;
+        width: auto !important;
+        display: inline-flex !important;
+        flex: 0 0 auto !important;
+    }
+
+    /* Fix specific template-footer layout */
+    .template-footer {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    .template-footer .template-meta {
+        width: 100% !important;
+        margin-bottom: 10px !important;
+    }
+
+    .template-footer .template-actions {
+        width: 100% !important;
+        justify-content: flex-start !important;
+    }
+}
+
+@media (max-width: 375px) {
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .page-header-bg {
+        padding: 15px;
+    }
+
+    .products-title {
+        font-size: 20px;
+    }
+
+    .add-product-btn {
+        padding: 6px 15px;
+        font-size: 12px;
+    }
+
+    /* Colors, Sizes, and Description Templates adjustments */
+    .card-body {
+        padding: 15px 12px;
+    }
+
+    .table td, .table th {
+        padding: 8px 5px;
+        font-size: 13px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .action-buttons .btn {
+        margin-bottom: 5px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .file-input-btn {
+        padding: 0 10px;
+        font-size: 12px;
+    }
+
+    .file-preview-item {
+        width: 60px;
+        height: 60px;
+    }
+
+    /* Description Templates improvements */
+    .template-filters {
+        flex-direction: column;
+    }
+
+    .template-filters select {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .template-content {
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
+
+    .template-footer .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    .template-actions {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 8px;
+    }
+
+    /* Further template search and filter adjustments */
+    .template-search-filter-row > * {
+        margin-bottom: 12px;
+    }
+
+    /* Further adjustments for template filter bar */
+    .template-filter-bar {
+        padding: 10px;
+    }
+
+    .template-search, #categoryFilter {
+        font-size: 14px;
+    }
+
+    /* Ensure buttons stay horizontal */
+    .template-actions, .action-buttons {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: flex-end !important;
+    }
+
+    .template-actions .btn,
+    .action-buttons .btn,
+    .template-actions form {
+        width: auto !important;
+        margin: 0 2px !important;
+    }
+}
+
+@media (max-width: 320px) {
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .stat-card {
+        padding: 15px 10px;
+    }
+
+    .stat-card h3 {
+        font-size: 20px;
+    }
+
+    .products-header {
+        padding: 10px 15px;
+    }
+
+    .search-form .form-control {
+        font-size: 12px;
+    }
+
+    /* Colors, Sizes, and Description Templates adjustments */
+    .table td, .table th {
+        padding: 6px 4px;
+        font-size: 12px;
+    }
+
+    .card-header h4 {
+        font-size: 16px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+    }
+
+    .pagination-links .pagination {
+        font-size: 11px;
+    }
+
+    .pagination-links .page-link {
+        padding: 0.2rem 0.4rem;
+    }
+
+    .color-options, .size-chips {
+        gap: 5px;
+    }
+
+    .color-chip, .size-chip {
+        padding: 3px 6px;
+        font-size: 11px;
+    }
+
+    .add-color-btn, .add-size-btn {
+        min-width: 70px;
+        height: 34px;
+        font-size: 12px;
+    }
+
+    /* Description Templates improvements */
+    .template-title {
+        font-size: 14px;
+    }
+
+    .template-meta {
+        font-size: 11px;
+    }
+
+    .template-content {
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
+
+    .template-tag {
+        font-size: 9px;
+        padding: 2px 5px;
+    }
+
+    .template-actions .btn {
+        padding: 3px 6px;
+        font-size: 11px;
+    }
+
+    /* Additional adjustments for smallest screens */
+    .template-search-filter-row {
+        gap: 10px;
+    }
+
+    /* Smallest screen adjustments for template filter bar */
+    .template-filter-bar {
+        padding: 8px;
+    }
+
+    .template-search, #categoryFilter {
+        font-size: 13px;
+    }
+
+    /* Keep buttons horizontal on smallest screens */
+    .template-actions .btn,
+    .action-buttons .btn {
+        padding: 3px 6px;
+        font-size: 11px;
+        margin: 0 1px !important;
+    }
+}
+
+/* Description Templates Specific Styling */
+.template-card {
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.template-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.template-header {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f1f1f1;
+    background-color: #f8f9fa;
+}
+
+.template-title {
+    font-weight: 600;
+    color: #34395e;
+    margin-bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.template-body {
+    padding: 15px;
+}
+
+.template-meta {
+    font-size: 13px;
+    color: #868e96;
+    margin-bottom: 10px;
+}
+
+.template-content {
+    color: #6c757d;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    box-orient: vertical;
+    line-height: 1.5;
+}
+
+.template-footer {
+    padding: 10px 15px;
+    border-top: 1px solid #f1f1f1;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.template-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 5px;
+    background-color: rgba(103, 119, 239, 0.1);
+    color: #6777ef;
+}
+
+/* Template search field fix */
+.template-search-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.template-search-input {
+    width: 100%;
+    padding-left: 40px;
+    border-radius: 50px;
+    border: 1px solid #e4e6fc;
+    height: 40px;
+}
+
+.template-search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6777ef;
+}
+
+/* Template search and filter layout */
+.template-search-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.template-search-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+.template-filter-wrapper {
+    position: relative;
+    flex: 1;
+}
