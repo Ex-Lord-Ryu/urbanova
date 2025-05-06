@@ -433,17 +433,8 @@
 
         // Price formatting
         function formatNumberWithDots(number) {
-            console.log('Raw input:', number);
-            // Pastikan hanya menangani angka murni
-            if (typeof number === 'string' && number.includes('.')) {
-                // Ini adalah angka dari database dengan format 300000.00
-                // Ambil hanya bagian depan titik (bilangan bulat)
-                number = number.split('.')[0];
-            }
-
             // Bersihkan pemisah ribuan yang mungkin ada
             let cleanNumber = number.toString().replace(/\./g, '');
-            console.log('Clean number:', cleanNumber);
 
             // Format dengan titik sebagai pemisah ribuan (format Indonesia)
             return cleanNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -452,23 +443,37 @@
         // Initialize price display if value exists
         var initialPrice = $('#real-price').val();
         if (initialPrice) {
-            // Pastikan harga ditampilkan dengan benar
             const initialDisplayPrice = formatNumberWithDots(initialPrice);
-            console.log('Harga awal:', initialPrice, 'Format tampilan:', initialDisplayPrice);
             $('#display-price').val(initialDisplayPrice);
         }
 
         // Handle price input changes
         $('#display-price').on('input', function(e) {
-            const inputValue = $(this).val();
-            // Format untuk tampilan
-            const formattedValue = formatNumberWithDots(inputValue);
-            $(this).val(formattedValue);
+            const input = $(this);
+            const cursorPos = input[0].selectionStart;
+            const inputValue = input.val();
+            const dotsBefore = (inputValue.substring(0, cursorPos).match(/\./g) || []).length;
 
-            // Simpan nilai bersih ke hidden field
-            const cleanValue = formattedValue.replace(/\./g, '');
+            // Remove all dots first
+            const cleanValue = inputValue.replace(/\./g, '');
+
+            // Format with dots
+            const formattedValue = formatNumberWithDots(cleanValue);
+
+            // Update the display value
+            input.val(formattedValue);
+
+            // Store clean value in hidden field
             $('#real-price').val(cleanValue);
-            console.log('Input:', inputValue, 'Format:', formattedValue, 'Nilai bersih:', cleanValue);
+
+            // Adjust cursor position accounting for added/removed dots
+            const dotsAfter = (formattedValue.substring(0, cursorPos).match(/\./g) || []).length;
+            const newCursorPos = cursorPos + (dotsAfter - dotsBefore);
+
+            // Set the cursor position
+            setTimeout(() => {
+                input[0].setSelectionRange(newCursorPos, newCursorPos);
+            }, 0);
         });
 
         // Handle form submission

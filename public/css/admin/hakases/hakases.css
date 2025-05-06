@@ -26,7 +26,13 @@
 .main-content {
     margin-left: 150px;
     width: calc(100% - 150px);
-    transition: all 0.5s;
+    transition: all 0.3s ease;
+}
+
+.sidebar-mini .main-content {
+    margin-left: 20px;
+    width: calc(100% - 20px);
+    transition: all 0.3s ease;
 }
 
 /* Minimized Sidebar */

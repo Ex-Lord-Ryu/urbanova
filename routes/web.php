@@ -7,23 +7,15 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\DescriptionTemplateController;
+use App\Http\Controllers\LandingController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\SettingsController;
 
-Route::get('/', function () {
-    return view('landing/landing_page');
-});
-
-Route::get('/about', function () {
-    return view('landing/about');
-});
-
-// New Shop route
-Route::get('/shop', function () {
-    return view('shop/shop');
-});
-
-Route::get('/contact', function () {
-    return view('landing/contact');
-});
+// Landing and shop pages
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+Route::get('/about', [LandingController::class, 'about'])->name('about');
+Route::get('/contact', [LandingController::class, 'contact'])->name('contact');
+Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 
 Auth::routes();
 
@@ -76,6 +68,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/sizes/{size}/edit', [SizeController::class, 'edit'])->name('sizes.edit');
         Route::put('/sizes/{size}', [SizeController::class, 'update'])->name('sizes.update');
         Route::delete('/sizes/{size}', [SizeController::class, 'destroy'])->name('sizes.destroy');
+
+        // Settings Routes
+        Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+        Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+        Route::post('/settings/toggle/{key}', [SettingsController::class, 'toggle'])->name('settings.toggle');
     });
 
     // Tambahkan rute-rute AJAX untuk warna dan ukuran

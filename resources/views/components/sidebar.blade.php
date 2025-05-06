@@ -12,6 +12,10 @@
                 <li class="{{ Request::is('home') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('home') }}"><i class="fas fa-fire"></i><span>Dashboard</span></a>
                 </li>
+                <li class="menu-header">Beranda</li>
+                <li class="{{ Request::is('landing_page') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('/') }}"><i class="fas fa-home"></i><span>Beranda</span></a>
+                </li>
                 @if (Auth::user()->role == 'admin')
                     <li class="menu-header">Hak Akses</li>
                     <li class="{{ Request::is('hakakses') ? 'active' : '' }}">
@@ -21,19 +25,30 @@
 
                     <li class="menu-header">Manajemen Produk</li>
                     <li class="{{ Request::is('categories*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('categories') }}"><i class="fas fa-list"></i> <span>Kategori Produk</span></a>
+                        <a class="nav-link" href="{{ url('categories') }}"><i class="fas fa-list"></i> <span>Kategori
+                                Produk</span></a>
                     </li>
                     <li class="{{ Request::is('products*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('products') }}"><i class="fas fa-tshirt"></i> <span>Produk Pakaian</span></a>
+                        <a class="nav-link" href="{{ url('products') }}"><i class="fas fa-tshirt"></i> <span>Produk
+                                Pakaian</span></a>
                     </li>
                     <li class="{{ Request::is('colors*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('colors') }}"><i class="fas fa-palette"></i> <span>Warna Produk</span></a>
+                        <a class="nav-link" href="{{ url('colors') }}"><i class="fas fa-palette"></i> <span>Warna
+                                Produk</span></a>
                     </li>
                     <li class="{{ Request::is('sizes*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('sizes') }}"><i class="fas fa-ruler"></i> <span>Ukuran Produk</span></a>
+                        <a class="nav-link" href="{{ url('sizes') }}"><i class="fas fa-ruler"></i> <span>Ukuran
+                                Produk</span></a>
                     </li>
                     <li class="{{ Request::is('description-templates*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('description-templates') }}"><i class="fas fa-file-alt"></i> <span>Template Deskripsi</span></a>
+                        <a class="nav-link" href="{{ url('description-templates') }}"><i class="fas fa-file-alt"></i>
+                            <span>Template Deskripsi</span></a>
+                    </li>
+
+                    <li class="menu-header">Pengaturan</li>
+                    <li class="{{ Request::is('settings*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('settings') }}"><i class="fas fa-cog"></i> <span>Pengaturan
+                                Tampilan</span></a>
                     </li>
                 @endif
                 <!-- profile ganti password -->

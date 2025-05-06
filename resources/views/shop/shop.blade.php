@@ -17,17 +17,19 @@
         <div class="filter-group">
           <h4>Category</h4>
           <ul>
-            <li><label><input type="checkbox"> Clothing</label></li>
-            <li><label><input type="checkbox"> Electronics</label></li>
-            <li><label><input type="checkbox"> Accessories</label></li>
+            @foreach($categories as $category)
+              <li><label><input type="checkbox" name="category[]" value="{{ $category->id }}"> {{ $category->name }}</label></li>
+            @endforeach
           </ul>
         </div>
         <div class="filter-group">
           <h4>Price</h4>
           <ul>
-            <li><label><input type="radio" name="price"> Under $25</label></li>
-            <li><label><input type="radio" name="price"> $25–50</label></li>
-            <li><label><input type="radio" name="price"> $50–100</label></li>
+            @forelse($priceRanges as $index => $range)
+              <li><label><input type="radio" name="price" value="{{ $index }}"> {{ $range['label'] }}</label></li>
+            @empty
+              <li>No price ranges available</li>
+            @endforelse
           </ul>
         </div>
         <button class="apply-filters">Apply Filters</button>
@@ -35,72 +37,33 @@
 
       <!-- Products Grid -->
       <section class="products shop-grid">
-        <!-- Example product card; duplicate as needed -->
-        <div class="product-card">
-          <div class="product-img" style="background-image: url('https://via.placeholder.com/300');"></div>
-          <div class="product-info">
-            <h3>Urban Tee</h3>
-            <div class="price">$29.99</div>
-            <button>Add to Cart</button>
+        @forelse($products as $product)
+          <div class="product-card {{ $product->is_featured && $showFeaturedBadge ? 'featured' : '' }}">
+            @if($product->is_featured && $showFeaturedBadge)
+              <div class="featured-badge">Unggulan</div>
+            @endif
+            <div class="product-img-container">
+              <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://via.placeholder.com/300' }}" alt="{{ $product->name }}" class="product-img">
+            </div>
+            <div class="product-info">
+              <h3>{{ $product->name }}</h3>
+              <div class="price">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+              <button>Add to Cart</button>
+            </div>
           </div>
-        </div>
-        <div class="product-card">
-          <div class="product-img" style="background-image: url('https://via.placeholder.com/300');"></div>
-          <div class="product-info">
-            <h3>Urban Tee</h3>
-            <div class="price">$29.99</div>
-            <button>Add to Cart</button>
+        @empty
+          <div class="no-products">
+            <p>No products available at this time.</p>
           </div>
-        </div>
-        <div class="product-card">
-          <div class="product-img" style="background-image: url('https://via.placeholder.com/300');"></div>
-          <div class="product-info">
-            <h3>Urban Tee</h3>
-            <div class="price">$29.99</div>
-            <button>Add to Cart</button>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-img" style="background-image: url('https://via.placeholder.com/300');"></div>
-          <div class="product-info">
-            <h3>Urban Tee</h3>
-            <div class="price">$29.99</div>
-            <button>Add to Cart</button>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-img" style="background-image: url('https://via.placeholder.com/300');"></div>
-          <div class="product-info">
-            <h3>Urban Tee</h3>
-            <div class="price">$29.99</div>
-            <button>Add to Cart</button>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-img" style="background-image: url('https://via.placeholder.com/300');"></div>
-          <div class="product-info">
-            <h3>Urban Tee</h3>
-            <div class="price">$29.99</div>
-            <button>Add to Cart</button>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-img" style="background-image: url('https://via.placeholder.com/300');"></div>
-          <div class="product-info">
-            <h3>Urban Tee</h3>
-            <div class="price">$29.99</div>
-            <button>Add to Cart</button>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-img" style="background-image: url('https://via.placeholder.com/300');"></div>
-          <div class="product-info">
-            <h3>Urban Tee</h3>
-            <div class="price">$29.99</div>
-            <button>Add to Cart</button>
-          </div>
-        </div>
+        @endforelse
       </section>
+
+      <!-- Pagination -->
+      @if($products->hasPages())
+        <div class="pagination">
+          {{ $products->links() }}
+        </div>
+      @endif
     </div>
   </main>
 @endsection

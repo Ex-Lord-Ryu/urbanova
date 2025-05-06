@@ -13,37 +13,21 @@
     </section>
 
     <section class="products">
-        <div class="product-card">
-            <img src="https://via.placeholder.com/300" alt="Product 1" class="product-img">
-            <div class="product-info">
-                <h3>Oversized Boxy</h3>
-                <div class="price">$29.99</div>
-                <button>Add to Cart</button>
+        @forelse ($featuredProducts as $product)
+            <div class="product-card">
+                <div class="product-img-container">
+                    <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://via.placeholder.com/300' }}" alt="{{ $product->name }}" class="product-img">
+                </div>
+                <div class="product-info">
+                    <h3>{{ $product->name }}</h3>
+                    <div class="price">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                    <button>Add to Cart</button>
+                </div>
             </div>
-        </div>
-        <div class="product-card">
-            <img src="https://via.placeholder.com/300" alt="Product 2" class="product-img">
-            <div class="product-info">
-                <h3>Body Fit</h3>
-                <div class="price">$39.99</div>
-                <button>Add to Cart</button>
+        @empty
+            <div class="no-products">
+                <p>No featured products available at the moment.</p>
             </div>
-        </div>
-        <div class="product-card">
-            <img src="https://via.placeholder.com/300" alt="Product 3" class="product-img">
-            <div class="product-info">
-                <h3>Product Title 3</h3>
-                <div class="price">$19.99</div>
-                <button>Add to Cart</button>
-            </div>
-        </div>
-        <div class="product-card">
-            <img src="https://via.placeholder.com/300" alt="Product 4" class="product-img">
-            <div class="product-info">
-                <h3>Product Title 4</h3>
-                <div class="price">$49.99</div>
-                <button>Add to Cart</button>
-            </div>
-        </div>
+        @endforelse
     </section>
 @endsection
