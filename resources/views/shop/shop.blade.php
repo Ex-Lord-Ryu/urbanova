@@ -13,26 +13,44 @@
 
       <!-- Sidebar: Filters -->
       <aside class="filters">
-        <h3>Filter by</h3>
-        <div class="filter-group">
-          <h4>Category</h4>
-          <ul>
-            @foreach($categories as $category)
-              <li><label><input type="checkbox" name="category[]" value="{{ $category->id }}"> {{ $category->name }}</label></li>
-            @endforeach
-          </ul>
-        </div>
-        <div class="filter-group">
-          <h4>Price</h4>
-          <ul>
-            @forelse($priceRanges as $index => $range)
-              <li><label><input type="radio" name="price" value="{{ $index }}"> {{ $range['label'] }}</label></li>
-            @empty
-              <li>No price ranges available</li>
-            @endforelse
-          </ul>
-        </div>
-        <button class="apply-filters">Apply Filters</button>
+        <form action="{{ route('shop') }}" method="GET" id="filterForm">
+          <h3>Filter by</h3>
+          <div class="filter-group">
+            <h4>Category</h4>
+            <ul>
+              @foreach($categories as $category)
+                <li>
+                  <label>
+                    <input type="checkbox"
+                           name="category[]"
+                           value="{{ $category->id }}"
+                           {{ in_array($category->id, is_array($selectedCategories) ? $selectedCategories : []) ? 'checked' : '' }}>
+                    {{ $category->name }}
+                  </label>
+                </li>
+              @endforeach
+            </ul>
+          </div>
+          <div class="filter-group">
+            <h4>Price</h4>
+            <ul>
+              @forelse($priceRanges as $index => $range)
+                <li>
+                  <label>
+                    <input type="radio"
+                           name="price"
+                           value="{{ $index }}"
+                           {{ (string)$selectedPrice === (string)$index ? 'checked' : '' }}>
+                    {{ $range['label'] }}
+                  </label>
+                </li>
+              @empty
+                <li>No price ranges available</li>
+              @endforelse
+            </ul>
+          </div>
+          <button type="submit" class="apply-filters">APPLY FILTERS</button>
+        </form>
       </aside>
 
       <!-- Products Grid -->
@@ -67,3 +85,22 @@
     </div>
   </main>
 @endsection
+
+@push('scripts')
+<script>
+  // Automatically submit form when checkbox or radio changes
+  document.addEventListener('DOMContentLoaded', function() {
+    // For demo purposes, we're not using this auto-submit
+    // as it might be confusing for users to have the page refresh immediately
+    // Uncomment the code below if you want filters to apply automatically
+    /*
+    const filterInputs = document.querySelectorAll('#filterForm input[type="checkbox"], #filterForm input[type="radio"]');
+    filterInputs.forEach(input => {
+      input.addEventListener('change', function() {
+        document.getElementById('filterForm').submit();
+      });
+    });
+    */
+  });
+</script>
+@endpush
