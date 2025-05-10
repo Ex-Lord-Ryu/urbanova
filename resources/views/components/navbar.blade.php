@@ -9,26 +9,45 @@
                 <li><a href="{{ url('/about') }}" class="{{ request()->is('about') ? 'active' : '' }}">About</a></li>
                 <li><a href="{{ url('/contact') }}" class="{{ request()->is('contact') ? 'active' : '' }}">Contact</a>
                 </li>
-                <li><a href="{{ url('/cart') }}" class="{{ request()->is('cart') ? 'active' : '' }}">Cart 🛒</a></li>
+                <li>
+                    <a href="{{ url('/cart') }}" class="{{ request()->is('cart') ? 'active' : '' }} cart-link">
+                        Cart 🛒
+                        @if($cartCount > 0)
+                            <span class="cart-count">{{ $cartCount }}</span>
+                        @endif
+                    </a>
+                </li>
 
                 @guest
                     <li><a href="{{ route('login') }}" class="{{ request()->is('login') ? 'active' : '' }}">Login</a></li>
                     <li><a href="{{ route('register') }}"
                             class="{{ request()->is('register') ? 'active' : '' }}">Register</a></li>
                 @else
-                    <li>
-                        <a href="{{ route('home') }}"
-                            class="{{ request()->is('home') ? 'active' : '' }}">Dashboard</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('logout') }}"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            Logout
-                        </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                    </li>
+                    @if(auth()->user()->role == 'admin')
+                        <li>
+                            <a href="{{ route('home') }}"
+                                class="{{ request()->is('home') ? 'active' : '' }}">Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('logout') }}"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                Logout
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </li>
+                    @else
+                        <li>
+                            <a href="{{ route('logout') }}"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                Logout
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </li>
+                    @endif
                 @endguest
             </ul>
         </nav>
@@ -90,6 +109,27 @@
         border: none;
         cursor: pointer;
         color: #090969;
+    }
+
+    /* Cart count styles */
+    .cart-link {
+        position: relative;
+    }
+
+    .cart-count {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: #ff0000;
+        color: white;
+        border-radius: 50%;
+        font-size: 0.7rem;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
     }
 
     /* Responsive for Mobile */

@@ -3,7 +3,9 @@ footer {
     background: #333;
     color: #fff;
     padding: 2rem 1rem;
-    margin-top: 2rem;
+    width: 100%;
+    z-index: 1000;
+    margin-top: auto;
 }
 
 * {
@@ -64,4 +66,21 @@ a {
     .footer-container {
         flex-direction: column;
     }
+}
+
+/* Style for body and main wrapper to work with the footer */
+body {
+    min-height: 100vh;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }

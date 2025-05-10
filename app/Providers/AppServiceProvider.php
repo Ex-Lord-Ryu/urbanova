@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\View;
 use App\Helpers\ColorHelper;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,6 +30,12 @@ class AppServiceProvider extends ServiceProvider
         // Register a custom Blade directive for getting color hex code
         Blade::directive('colorHex', function ($expression) {
             return "<?php echo \App\Helpers\ColorHelper::getColorHex($expression); ?>";
+        });
+
+        // Share cart count with all views
+        View::composer('*', function ($view) {
+            $cartCount = count(session('cart', []));
+            $view->with('cartCount', $cartCount);
         });
     }
 }

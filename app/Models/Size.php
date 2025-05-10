@@ -17,6 +17,14 @@ class Size extends Model
     ];
 
     /**
+     * Set the size's name to uppercase.
+     */
+    protected function setNameAttribute($value)
+    {
+        $this->attributes['name'] = strtoupper($value);
+    }
+
+    /**
      * Get the products that use this size.
      */
     public function products()

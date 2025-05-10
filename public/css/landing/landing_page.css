@@ -18,7 +18,7 @@ a {
 
 /* Hero */
 .hero {
-    background: url('https://via.placeholder.com/1200x400') center/cover no-repeat;
+    /* background: url('../img/hero-bg.jpg') center/cover no-repeat; */
     height: 400px;
     display: flex;
     align-items: center;
@@ -95,6 +95,26 @@ a {
     font-weight: 600;
     color: #090969;
     margin-bottom: 1rem;
+}
+
+.btn-add-to-cart {
+    background: #090969;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.3rem;
+    color: #fff !important;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.3s ease;
+    display: block;
+    width: calc(100% - 2rem);
+    margin: 0 1rem 1rem;
+}
+
+.btn-add-to-cart:hover {
+    background: #fff !important;
+    border: solid 2px #090969 !important;
+    color: #090969 !important;
 }
 
 .product-info button {

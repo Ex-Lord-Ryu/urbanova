@@ -65,13 +65,49 @@ class ProductController extends Controller
 
             // Pastikan price adalah numerik dan tidak terjadi perubahan format yang salah
             if (isset($data['price'])) {
-                // Simpan nilai price tanpa modifikasi - validasi sudah memastikan ini numeric
-                $data['price'] = $request->price;
+                // Log untuk debugging
+                Log::info('Store Product Price (Before):', [
+                    'price_raw' => $request->price,
+                    'price_type' => gettype($request->price)
+                ]);
+
+                // Konversi ke float untuk memastikan format numerik yang benar
+                $data['price'] = (float)$request->price;
 
                 // Pastikan nilai numeric valid
                 if (!is_numeric($data['price'])) {
                     throw new \Exception('Nilai harga tidak valid: ' . $data['price']);
                 }
+
+                Log::info('Store Product Price (After):', [
+                    'price_converted' => $data['price'],
+                    'price_type' => gettype($data['price'])
+                ]);
+            }
+
+            // Handle size prices if they exist
+            if ($request->has('price_type') && $request->price_type === 'range') {
+                $data['has_size_prices'] = true;
+                $data['base_price'] = (float)$request->base_price;
+                $data['price_increase'] = (float)$request->price_increase;
+
+                // Process size_prices array (format the values properly)
+                $sizePrices = [];
+                if ($request->has('size_prices')) {
+                    foreach ($request->size_prices as $size => $price) {
+                        if (!empty($price)) {
+                            // Remove formatting like dots and commas
+                            $cleanPrice = str_replace(['.', ','], ['', '.'], $price);
+                            $sizePrices[$size] = (float)$cleanPrice;
+                        }
+                    }
+                    $data['size_prices'] = $sizePrices;
+                }
+            } else {
+                $data['has_size_prices'] = false;
+                $data['base_price'] = null;
+                $data['price_increase'] = null;
+                $data['size_prices'] = null;
             }
 
             // Generate SKU if not provided
@@ -154,6 +190,18 @@ class ProductController extends Controller
                 }
 
                 $product->sizes()->sync($sizeIds);
+
+                // Initialize stocks for each size
+                foreach ($sizeIds as $sizeId) {
+                    // Check if we have a specific stock for this size
+                    $stockKey = 'size_stock_' . $sizeId;
+                    $sizeStock = $request->has($stockKey) ? $request->$stockKey : $request->stock; // Default ke stok global
+
+                    $product->sizeStocks()->create([
+                        'size_id' => $sizeId,
+                        'stock' => $sizeStock
+                    ]);
+                }
             }
 
             // Process description templates
@@ -176,7 +224,20 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $product->load(['category', 'colors', 'sizes']);
-        return view('admin.products.show', compact('product'));
+
+        // Check if we're accessing from admin route
+        if (request()->is('products/*')) {
+            return view('admin.products.show', compact('product'));
+        }
+
+        // For public view, get related products from same category
+        $relatedProducts = Product::where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->where('is_active', true)
+            ->take(4)
+            ->get();
+
+        return view('product.show', compact('product', 'relatedProducts'));
     }
 
     /**
@@ -229,21 +290,59 @@ class ProductController extends Controller
             ]);
 
             // Update produk dengan harga bersih
-            $product->update([
+            Log::info('Update Product Price (Before):', [
+                'price_raw' => $request->price,
+                'price_type' => gettype($request->price),
+                'price_value' => (float)$request->price
+            ]);
+
+            // Pastikan nilai harga adalah numeric yang valid
+            $priceValue = (float)$request->price;
+
+            $updateData = [
                 'category_id' => $request->category_id,
                 'name' => $request->name,
                 'slug' => Str::slug($request->name),
                 'sku' => $request->sku,
                 'description' => $request->description,
-                'price' => $request->price,
+                'price' => $priceValue,
                 'stock' => $request->stock,
                 'is_featured' => $request->is_featured ? true : false,
                 'is_active' => $request->is_active ? true : false,
-            ]);
+            ];
+
+            // Handle size prices if they exist
+            if ($request->has('price_type') && $request->price_type === 'range') {
+                $updateData['has_size_prices'] = true;
+                $updateData['base_price'] = (float)$request->base_price;
+                $updateData['price_increase'] = (float)$request->price_increase;
+
+                // Process size_prices array (format the values properly)
+                $sizePrices = [];
+                if ($request->has('size_prices')) {
+                    foreach ($request->size_prices as $size => $price) {
+                        if (!empty($price)) {
+                            // Remove formatting like dots and commas
+                            $cleanPrice = str_replace(['.', ','], ['', '.'], $price);
+                            $sizePrices[$size] = (float)$cleanPrice;
+                        }
+                    }
+                    $updateData['size_prices'] = $sizePrices;
+                }
+            } else {
+                $updateData['has_size_prices'] = false;
+                $updateData['base_price'] = null;
+                $updateData['price_increase'] = null;
+                $updateData['size_prices'] = null;
+            }
+
+            $product->update($updateData);
 
             Log::info('Product Price After Update:', [
                 'product_price' => $product->price,
-                'price_type' => gettype($product->price)
+                'price_type' => gettype($product->price),
+                'has_size_prices' => $product->has_size_prices,
+                'size_prices' => $product->size_prices
             ]);
 
             // Update warna (colors)
@@ -317,6 +416,25 @@ class ProductController extends Controller
 
             // Sync ukuran dengan produk
             $product->sizes()->sync($sizeIds);
+
+            // Update stock per size
+            foreach ($sizeIds as $sizeId) {
+                $stockKey = 'size_stock_' . $sizeId;
+                if ($request->has($stockKey)) {
+                    $sizeStock = $request->$stockKey;
+                } else {
+                    $sizeStock = $request->stock; // Default ke stok global
+                }
+
+                // Update or create stock record
+                $product->sizeStocks()->updateOrCreate(
+                    ['size_id' => $sizeId],
+                    ['stock' => $sizeStock]
+                );
+            }
+
+            // Remove stocks for sizes that were removed
+            $product->sizeStocks()->whereNotIn('size_id', $sizeIds)->delete();
 
             // Process description templates
             if ($request->has('description_templates')) {

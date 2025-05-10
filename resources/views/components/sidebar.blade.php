@@ -44,6 +44,10 @@
                         <a class="nav-link" href="{{ url('description-templates') }}"><i class="fas fa-file-alt"></i>
                             <span>Template Deskripsi</span></a>
                     </li>
+                    <li class="{{ Request::is('discounts*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('discounts') }}"><i class="fas fa-tags"></i>
+                            <span>Manajemen Diskon</span></a>
+                    </li>
 
                     <li class="menu-header">Pengaturan</li>
                     <li class="{{ Request::is('settings*') ? 'active' : '' }}">

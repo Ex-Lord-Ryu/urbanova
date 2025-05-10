@@ -10,12 +10,24 @@ use App\Http\Controllers\DescriptionTemplateController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\CartController;
 
 // Landing and shop pages
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/about', [LandingController::class, 'about'])->name('about');
 Route::get('/contact', [LandingController::class, 'contact'])->name('contact');
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+
+// Cart Routes
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::get('/cart/added-modal', [CartController::class, 'addedModal'])->name('cart.added-modal');
+
+// Product Detail Route - Public Access
+Route::get('/product/{product}', [App\Http\Controllers\ProductController::class, 'show'])->name('product.show');
 
 Auth::routes();
 
@@ -73,6 +85,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
         Route::post('/settings/toggle/{key}', [SettingsController::class, 'toggle'])->name('settings.toggle');
+        Route::post('/settings/clear-cache', [SettingsController::class, 'clearCache'])->name('settings.clear-cache');
+        Route::get('/settings/initialize', [SettingsController::class, 'initializeSettings'])->name('settings.initialize');
+
+        // Discount Management Routes
+        Route::get('/discounts', [App\Http\Controllers\Admin\DiscountController::class, 'index'])->name('admin.discounts.index');
+        Route::get('/discounts/create', [App\Http\Controllers\Admin\DiscountController::class, 'create'])->name('admin.discounts.create');
+        Route::post('/discounts', [App\Http\Controllers\Admin\DiscountController::class, 'store'])->name('admin.discounts.store');
+        Route::get('/discounts/{id}/edit', [App\Http\Controllers\Admin\DiscountController::class, 'edit'])->name('admin.discounts.edit');
+        Route::put('/discounts/{id}', [App\Http\Controllers\Admin\DiscountController::class, 'update'])->name('admin.discounts.update');
+        Route::delete('/discounts/{id}', [App\Http\Controllers\Admin\DiscountController::class, 'destroy'])->name('admin.discounts.destroy');
+        Route::get('/discounts/bulk', [App\Http\Controllers\Admin\DiscountController::class, 'createBulk'])->name('admin.discounts.create-bulk');
+        Route::post('/discounts/bulk', [App\Http\Controllers\Admin\DiscountController::class, 'storeBulk'])->name('admin.discounts.store-bulk');
     });
 
     // Tambahkan rute-rute AJAX untuk warna dan ukuran
@@ -84,4 +108,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('get-templates-json', [DescriptionTemplateController::class, 'getTemplatesJson'])->name('description-templates.json');
     Route::post('attach-template-to-product', [DescriptionTemplateController::class, 'attachToProduct'])->name('description-templates.attach');
     Route::post('detach-template-from-product', [DescriptionTemplateController::class, 'detachFromProduct'])->name('description-templates.detach');
+
+    Route::post('/checkout/process', 'CheckoutController@process')->name('checkout.process');
 });

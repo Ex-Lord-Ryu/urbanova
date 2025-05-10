@@ -170,24 +170,125 @@
 
                                     <div class="form-group">
                                         <label for="price">Harga <span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">Rp</span>
+                                        <div class="price-system">
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="radio" name="price_type" id="priceTypeSingle" value="single" checked>
+                                                <label class="form-check-label" for="priceTypeSingle">
+                                                    Harga Satuan
+                                                </label>
                                             </div>
-                                            <input type="text" class="form-control @error('price') is-invalid @enderror" id="display-price" placeholder="0" required>
-                                            <input type="hidden" name="price" id="real-price" value="{{ old('price') }}">
-                                            @error('price')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="radio" name="price_type" id="priceTypeRange" value="range">
+                                                <label class="form-check-label" for="priceTypeRange">
+                                                    Harga dengan Range
+                                                </label>
                                             </div>
-                                            @enderror
+
+                                            <div id="singlePriceSection">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Rp</span>
+                                                    </div>
+                                                    <input type="text" class="form-control @error('price') is-invalid @enderror" id="display-price" placeholder="0" required>
+                                                    <input type="hidden" name="price" id="real-price" value="{{ old('price') }}">
+                                                </div>
+                                                <small class="text-muted">Contoh: 1.000.000</small>
+                                            </div>
+
+                                            <div id="rangePriceSection" style="display: none;">
+                                                <div class="form-group">
+                                                    <label>Harga Dasar</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">Rp</span>
+                                                        </div>
+                                                        <input type="text" class="form-control" id="base-price" placeholder="0">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Persentase Kenaikan per Size</label>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" id="price-increase" placeholder="0" min="0" max="100">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">%</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div id="sizePricesSection" class="mt-3">
+                                                <h6>Harga per Size</h6>
+                                                <div class="size-prices">
+                                                    <div class="form-group">
+                                                        <label>XS</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text">Rp</span>
+                                                            </div>
+                                                            <input type="text" class="form-control size-price" data-size="XS" name="size_prices[XS]" placeholder="0">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>S</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text">Rp</span>
+                                                            </div>
+                                                            <input type="text" class="form-control size-price" data-size="S" name="size_prices[S]" placeholder="0">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>M</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text">Rp</span>
+                                                            </div>
+                                                            <input type="text" class="form-control size-price" data-size="M" name="size_prices[M]" placeholder="0">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>L</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text">Rp</span>
+                                                            </div>
+                                                            <input type="text" class="form-control size-price" data-size="L" name="size_prices[L]" placeholder="0">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>XL</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text">Rp</span>
+                                                            </div>
+                                                            <input type="text" class="form-control size-price" data-size="XL" name="size_prices[XL]" placeholder="0">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>XXL</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text">Rp</span>
+                                                            </div>
+                                                            <input type="text" class="form-control size-price" data-size="XXL" name="size_prices[XXL]" placeholder="0">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <small class="text-muted">Contoh: 1.000.000</small>
+                                        @error('price')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
                                     </div>
 
                                     <div class="form-group">
                                         <label for="stock">Stok <span class="text-danger">*</span></label>
                                         <input type="number" class="form-control @error('stock') is-invalid @enderror" id="stock" name="stock" value="{{ old('stock', 0) }}" min="0" required>
+                                        <div class="text-warning mt-1" id="stock-warning" style="display: none;">
+                                            <i class="fas fa-exclamation-triangle"></i> Jika anda menggunakan ukuran, nilai stok ini akan digunakan untuk semua ukuran yang tidak memiliki stok spesifik.
+                                        </div>
                                         @error('stock')
                                         <div class="invalid-feedback">
                                             {{ $message }}
@@ -265,140 +366,152 @@
                                             <div class="selectgroup selectgroup-pills size-options">
                                                 @foreach($sizes as $size)
                                                 <label class="selectgroup-item">
-                                                    <input type="checkbox" name="sizes[]" value="{{ $size->id }}" class="selectgroup-input" {{ is_array(old('sizes')) && in_array($size->id, old('sizes')) ? 'checked' : '' }}>
+                                                    <input type="checkbox" name="sizes[]" value="{{ $size->id }}" class="selectgroup-input size-checkbox" {{ is_array(old('sizes')) && in_array($size->id, old('sizes')) ? 'checked' : '' }}>
                                                     <span class="selectgroup-button">{{ $size->name }}</span>
                                                 </label>
                                                 @endforeach
                                             </div>
-                                            <p class="text-muted mb-2 mt-3">Tambahkan ukuran baru:</p>
-                                            <div class="size-input-group">
-                                                <input type="text" id="new-size" class="form-control" placeholder="Nama ukuran baru">
-                                                <button type="button" id="add-size-btn" class="add-size-btn">
-                                                    <i class="fas fa-plus mr-1"></i> Tambah
-                                                </button>
+
+                                    <div class="mt-3 mb-3">
+                                        <h6 class="text-primary">Stok per Ukuran</h6>
+                                        <p class="text-muted small">Jika tidak diisi, akan menggunakan stok global</p>
+                                        <div class="size-stock-container">
+                                            @foreach($sizes as $size)
+                                            <div class="form-group size-stock-item" data-size-id="{{ $size->id }}" style="display: none;">
+                                                <label for="size_stock_{{ $size->id }}">Stok untuk {{ $size->name }}</label>
+                                                <input type="number" class="form-control" id="size_stock_{{ $size->id }}" name="size_stock_{{ $size->id }}" value="{{ old('size_stock_' . $size->id, 0) }}" min="0">
                                             </div>
-                                            <div id="size-chips" class="size-chips">
-                                                @if(is_array(old('sizes')))
-                                                    @foreach(old('sizes') as $sizeValue)
-                                                        @if(!is_numeric($sizeValue))
-                                                        <div class="size-chip">
-                                                            {{ $sizeValue }}
-                                                            <input type="hidden" name="sizes[]" value="{{ $sizeValue }}">
-                                                            <span class="chip-remove"><i class="fas fa-times"></i></span>
-                                                        </div>
-                                                        @endif
-                                                    @endforeach
+                                            @endforeach
+                                        </div>
+                                    </div>
+
+                                    <p class="text-muted mb-2 mt-3">Tambahkan ukuran baru:</p>
+                                    <div class="size-input-group">
+                                        <input type="text" id="new-size" class="form-control" placeholder="Nama ukuran baru">
+                                        <button type="button" id="add-size-btn" class="add-size-btn">
+                                            <i class="fas fa-plus mr-1"></i> Tambah
+                                        </button>
+                                    </div>
+                                    <div id="size-chips" class="size-chips">
+                                        @if(is_array(old('sizes')))
+                                            @foreach(old('sizes') as $sizeValue)
+                                                @if(!is_numeric($sizeValue))
+                                                <div class="size-chip">
+                                                    {{ $sizeValue }}
+                                                    <input type="hidden" name="sizes[]" value="{{ $sizeValue }}">
+                                                    <span class="chip-remove"><i class="fas fa-times"></i></span>
+                                                </div>
                                                 @endif
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Warna Tersedia</label>
-                                        <div class="color-options">
-                                            <!-- Database Colors -->
-                                            <p class="text-muted mb-2">Pilih warna tersedia:</p>
-                                            <div class="selectgroup selectgroup-pills color-options">
-                                                @foreach($colors as $color)
-                                                <label class="selectgroup-item">
-                                                    <input type="checkbox" name="colors[]" value="{{ $color->id }}" class="selectgroup-input color-checkbox"
-                                                        {{ is_array(old('colors')) && in_array($color->id, old('colors')) ? 'checked' : '' }}>
-                                                    <span class="selectgroup-button">
-                                                        <span class="color-dot" style="background-color: #{{ $color->hex_code }}"></span>
-                                                        {{ $color->name }}
-                                                    </span>
-                                                </label>
-                                                @endforeach
-                                            </div>
-
-                                            <!-- Custom Colors -->
-                                            <p class="text-muted mb-2 mt-3">Tambahkan warna kustom:</p>
-                                            <div class="color-input-group">
-                                                <input type="text" id="new-color" class="form-control" placeholder="Nama warna baru">
-                                                <input type="color" id="color-picker" class="form-control color-picker" value="#6777ef">
-                                                <button type="button" id="add-color-btn" class="add-color-btn">
-                                                    <i class="fas fa-plus mr-1"></i> Tambah
-                                                </button>
-                                            </div>
-
-                                            <!-- Color Chips - Will show selected colors -->
-                                            <div id="color-chips" class="color-chips">
-                                                @if(is_array(old('colors')))
-                                                    @foreach(old('colors') as $colorValue)
-                                                        @if(!is_numeric($colorValue))
-                                                        <div class="color-chip">
-                                                            <span class="chip-color-dot" style="background-color: {{ \App\Helpers\ColorHelper::getColorHex($colorValue) }}"></span>
-                                                            {{ $colorValue }}
-                                                            <input type="hidden" name="colors[]" value="{{ $colorValue }}">
-                                                            <input type="hidden" name="color_hex_codes[]" value="{{ substr(\App\Helpers\ColorHelper::getColorHex($colorValue), 1) }}">
-                                                            <span class="chip-remove"><i class="fas fa-times"></i></span>
-                                                        </div>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="image">Gambar Utama</label>
-                                        <div class="file-input-container">
-                                            <div class="file-input-field" id="image-filename">Pilih Gambar</div>
-                                            <button type="button" class="file-input-btn">Browse</button>
-                                            <input type="file" class="file-input" id="image" name="image" accept="image/*">
-                                        </div>
-                                        @error('image')
-                                        <div class="text-danger mt-1">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                        <div id="image-preview" class="file-preview mt-2"></div>
-                                        <small class="form-text text-muted">Format: JPG, PNG, JPEG, GIF. Maks: 2MB</small>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="additional_images">Gambar Tambahan</label>
-                                        <div class="file-input-container">
-                                            <div class="file-input-field" id="additional-images-filename">Pilih Beberapa Gambar</div>
-                                            <button type="button" class="file-input-btn">Browse</button>
-                                            <input type="file" class="file-input" id="additional_images" name="additional_images[]" accept="image/*" multiple>
-                                        </div>
-                                        @error('additional_images')
-                                        <div class="text-danger mt-1">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                        <div id="additional-images-preview" class="file-preview mt-2"></div>
-                                        <small class="form-text text-muted">Format: JPG, PNG, JPEG, GIF. Maks: 2MB per file. Maksimal 5 file.</small>
-                                    </div>
-
-                                    <div class="form-group form-switch-container">
-                                        <label class="custom-switch mt-2">
-                                            <input type="checkbox" name="is_featured" class="custom-switch-input" value="1" {{ old('is_featured') ? 'checked' : '' }}>
-                                            <span class="custom-switch-indicator"></span>
-                                            <span class="custom-switch-description">Produk Unggulan</span>
-                                        </label>
-                                    </div>
-
-                                    <div class="form-group form-switch-container">
-                                        <label class="custom-switch mt-2">
-                                            <input type="checkbox" name="is_active" class="custom-switch-input" value="1" {{ old('is_active', '1') ? 'checked' : '' }}>
-                                            <span class="custom-switch-indicator"></span>
-                                            <span class="custom-switch-description">Aktif</span>
-                                        </label>
+                                            @endforeach
+                                        @endif
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group form-actions">
-                                <button type="submit" class="btn btn-primary btn-lg shadow-sm">
-                                    <i class="fas fa-save mr-1"></i> Simpan Produk
-                                </button>
-                                <a href="{{ route('products.index') }}" class="btn btn-secondary btn-lg ml-2">
-                                    <i class="fas fa-times mr-1"></i> Batal
-                                </a>
+                            <div class="form-group">
+                                <label>Warna Tersedia</label>
+                                <div class="color-options">
+                                    <!-- Database Colors -->
+                                    <p class="text-muted mb-2">Pilih warna tersedia:</p>
+                                    <div class="selectgroup selectgroup-pills color-options">
+                                        @foreach($colors as $color)
+                                        <label class="selectgroup-item">
+                                            <input type="checkbox" name="colors[]" value="{{ $color->id }}" class="selectgroup-input color-checkbox"
+                                                {{ is_array(old('colors')) && in_array($color->id, old('colors')) ? 'checked' : '' }}>
+                                            <span class="selectgroup-button">
+                                                <span class="color-dot" style="background-color: #{{ $color->hex_code }}"></span>
+                                                {{ $color->name }}
+                                            </span>
+                                        </label>
+                                        @endforeach
+                                    </div>
+
+                                    <!-- Custom Colors -->
+                                    <p class="text-muted mb-2 mt-3">Tambahkan warna kustom:</p>
+                                    <div class="color-input-group">
+                                        <input type="text" id="new-color" class="form-control" placeholder="Nama warna baru">
+                                        <input type="color" id="color-picker" class="form-control color-picker" value="#6777ef">
+                                        <button type="button" id="add-color-btn" class="add-color-btn">
+                                            <i class="fas fa-plus mr-1"></i> Tambah
+                                        </button>
+                                    </div>
+
+                                    <!-- Color Chips - Will show selected colors -->
+                                    <div id="color-chips" class="color-chips">
+                                        @if(is_array(old('colors')))
+                                            @foreach(old('colors') as $colorValue)
+                                                @if(!is_numeric($colorValue))
+                                                <div class="color-chip">
+                                                    <span class="chip-color-dot" style="background-color: {{ \App\Helpers\ColorHelper::getColorHex($colorValue) }}"></span>
+                                                    {{ $colorValue }}
+                                                    <input type="hidden" name="colors[]" value="{{ $colorValue }}">
+                                                    <input type="hidden" name="color_hex_codes[]" value="{{ substr(\App\Helpers\ColorHelper::getColorHex($colorValue), 1) }}">
+                                                    <span class="chip-remove"><i class="fas fa-times"></i></span>
+                                                </div>
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
-                        </form>
+
+                            <div class="form-group">
+                                <label for="image">Gambar Utama</label>
+                                <div class="file-input-container">
+                                    <div class="file-input-field" id="image-filename">Pilih Gambar</div>
+                                    <button type="button" class="file-input-btn">Browse</button>
+                                    <input type="file" class="file-input" id="image" name="image" accept="image/*">
+                                </div>
+                                @error('image')
+                                <div class="text-danger mt-1">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                                <div id="image-preview" class="file-preview mt-2"></div>
+                                <small class="form-text text-muted">Format: JPG, PNG, JPEG, GIF. Maks: 2MB</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="additional_images">Gambar Tambahan</label>
+                                <div class="file-input-container">
+                                    <div class="file-input-field" id="additional-images-filename">Pilih Beberapa Gambar</div>
+                                    <button type="button" class="file-input-btn">Browse</button>
+                                    <input type="file" class="file-input" id="additional_images" name="additional_images[]" accept="image/*" multiple>
+                                </div>
+                                @error('additional_images')
+                                <div class="text-danger mt-1">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                                <div id="additional-images-preview" class="file-preview mt-2"></div>
+                                <small class="form-text text-muted">Format: JPG, PNG, JPEG, GIF. Maks: 2MB per file. Maksimal 5 file.</small>
+                            </div>
+
+                            <div class="form-group form-switch-container">
+                                <label class="custom-switch mt-2">
+                                    <input type="checkbox" name="is_featured" class="custom-switch-input" value="1" {{ old('is_featured') ? 'checked' : '' }}>
+                                    <span class="custom-switch-indicator"></span>
+                                    <span class="custom-switch-description">Produk Unggulan</span>
+                                </label>
+                            </div>
+
+                            <div class="form-group form-switch-container">
+                                <label class="custom-switch mt-2">
+                                    <input type="checkbox" name="is_active" class="custom-switch-input" value="1" {{ old('is_active', '1') ? 'checked' : '' }}>
+                                    <span class="custom-switch-indicator"></span>
+                                    <span class="custom-switch-description">Aktif</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-actions">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+                            <i class="fas fa-save mr-1"></i> Simpan Produk
+                        </button>
+                        <a href="{{ route('products.index') }}" class="btn btn-secondary btn-lg ml-2">
+                            <i class="fas fa-times mr-1"></i> Batal
+                        </a>
                     </div>
                 </div>
             </div>
@@ -409,8 +522,56 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script src="{{ asset('js/admin/products/price-system.js') }}"></script>
 <script>
     $(document).ready(function() {
+        // Initialize size stock visibility
+        $('.size-checkbox').each(function() {
+            if ($(this).is(':checked')) {
+                const sizeId = $(this).val();
+                $(`.size-stock-item[data-size-id="${sizeId}"]`).show();
+                // Show warning if any size is checked
+                $('#stock-warning').show();
+            }
+        });
+
+        // Size checkbox change event
+        $('.size-checkbox').on('change', function() {
+            const sizeId = $(this).val();
+            const isChecked = $(this).is(':checked');
+
+            // Show/hide the stock input for this size
+            if (isChecked) {
+                $(`.size-stock-item[data-size-id="${sizeId}"]`).show();
+                // Populate with global stock value if it's zero
+                const currentSizeStock = $(`#size_stock_${sizeId}`).val();
+                if (currentSizeStock === '0' || currentSizeStock === '') {
+                    $(`#size_stock_${sizeId}`).val($('#stock').val());
+                }
+                // Show the warning message
+                $('#stock-warning').show();
+            } else {
+                $(`.size-stock-item[data-size-id="${sizeId}"]`).hide();
+                // Hide warning if no sizes are checked
+                if ($('.size-checkbox:checked').length === 0) {
+                    $('#stock-warning').hide();
+                }
+            }
+        });
+
+        // When global stock changes, update all empty size stocks
+        $('#stock').on('change', function() {
+            const globalStock = $(this).val();
+            $('.size-checkbox:checked').each(function() {
+                const sizeId = $(this).val();
+                const sizeStockField = $(`#size_stock_${sizeId}`);
+                // Only update if the current value is 0
+                if (sizeStockField.val() === '0' || sizeStockField.val() === '') {
+                    sizeStockField.val(globalStock);
+                }
+            });
+        });
+
         // Initialize Summernote WYSIWYG editor
         $('.summernote').summernote({
             height: 200,
@@ -433,11 +594,27 @@
 
         // Price formatting
         function formatNumberWithDots(number) {
-            // Bersihkan pemisah ribuan yang mungkin ada
-            let cleanNumber = number.toString().replace(/\./g, '');
+            if (!number) return '';
 
-            // Format dengan titik sebagai pemisah ribuan (format Indonesia)
-            return cleanNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            // Convert to string and clean up the number first
+            let cleanNumber = number;
+            if (typeof cleanNumber === 'string') {
+                // Remove all dots and replace commas with dots
+                cleanNumber = cleanNumber.replace(/\./g, '');
+                cleanNumber = cleanNumber.replace(/,/g, '.');
+            }
+
+            // Ensure it's a valid number
+            if (isNaN(Number(cleanNumber))) {
+                console.error('Invalid number format:', number);
+                return '0';
+            }
+
+            // Get the integer part only for formatting
+            const integerPart = Math.floor(Number(cleanNumber)).toString();
+
+            // Format with dots as thousand separators (Indonesian format)
+            return integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
 
         // Initialize price display if value exists
@@ -449,40 +626,75 @@
 
         // Handle price input changes
         $('#display-price').on('input', function(e) {
-            const input = $(this);
-            const cursorPos = input[0].selectionStart;
-            const inputValue = input.val();
-            const dotsBefore = (inputValue.substring(0, cursorPos).match(/\./g) || []).length;
+            // Ambil nilai input saat ini dan hapus semua karakter kecuali angka
+            let inputValue = $(this).val().replace(/[^\d]/g, '');
 
-            // Remove all dots first
-            const cleanValue = inputValue.replace(/\./g, '');
+            // Jika kosong, tampilkan kosong
+            if (inputValue === '') {
+                $(this).val('');
+                $('#real-price').val('');
+                return;
+            }
 
-            // Format with dots
-            const formattedValue = formatNumberWithDots(cleanValue);
+            // Simpan nilai bersih ke hidden field
+            $('#real-price').val(inputValue);
 
-            // Update the display value
-            input.val(formattedValue);
-
-            // Store clean value in hidden field
-            $('#real-price').val(cleanValue);
-
-            // Adjust cursor position accounting for added/removed dots
-            const dotsAfter = (formattedValue.substring(0, cursorPos).match(/\./g) || []).length;
-            const newCursorPos = cursorPos + (dotsAfter - dotsBefore);
-
-            // Set the cursor position
-            setTimeout(() => {
-                input[0].setSelectionRange(newCursorPos, newCursorPos);
-            }, 0);
+            // Format ulang dan tampilkan (tanpa padding angka 0 di depan)
+            const formattedValue = formatNumberWithDots(inputValue);
+            $(this).val(formattedValue);
         });
 
-        // Handle form submission
-        $('form').on('submit', function() {
+        // Tambahkan validasi form sebelum submit untuk memastikan stok ukuran terisi
+        $('form').on('submit', function(e) {
+            // Validasi harga...
             const displayValue = $('#display-price').val();
-            // Bersihkan nilai dengan menghapus semua titik sebagai pemisah ribuan
             const cleanValue = displayValue.replace(/\./g, '');
             $('#real-price').val(cleanValue);
-            console.log('Nilai yang dikirim:', cleanValue);
+
+            // Handle price system values
+            const priceType = $('input[name="price_type"]:checked').val();
+            if (priceType === 'range') {
+                // Format and set base price
+                const basePrice = $('#base-price').val().replace(/\./g, '');
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'base_price',
+                    value: basePrice
+                }).appendTo('form');
+
+                // Set price increase
+                const priceIncrease = $('#price-increase').val();
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'price_increase',
+                    value: priceIncrease
+                }).appendTo('form');
+
+                // Format size prices
+                $('.size-price').each(function() {
+                    const input = $(this);
+                    const value = input.val();
+                    if (value) {
+                        input.val(value.replace(/\./g, ''));
+                    }
+                });
+            }
+
+            // Validasi stok ukuran
+            let hasSizes = $('.size-checkbox:checked').length > 0;
+            if (hasSizes) {
+                let hasEmptyStock = false;
+                $('.size-checkbox:checked').each(function() {
+                    const sizeId = $(this).val();
+                    const stockField = $(`#size_stock_${sizeId}`);
+                    if (stockField.val() === '' || stockField.val() === '0') {
+                        hasEmptyStock = true;
+                        stockField.val($('#stock').val()); // Isi dengan stok global
+                    }
+                });
+            }
+
+            console.log('Nilai harga yang dikirim:', cleanValue);
             return true;
         });
 
@@ -877,12 +1089,18 @@
                 templateContent = templateContent.replace(/\[category\]/g, $('#category_id option:selected').text() || '[category]');
                 templateContent = templateContent.replace(/\[price\]/g, 'Rp ' + ($('#display-price').val() || '[price]'));
 
+                // Bersihkan tag kosong di awal/akhir
+                templateContent = cleanEditorContent(templateContent);
+
                 // Append to existing content in editor
                 let currentContent = $('.summernote').summernote('code');
-                if (currentContent && currentContent.trim() !== '') {
-                    currentContent += '<br><br>';
+                currentContent = cleanEditorContent(currentContent);
+                if (currentContent) {
+                    currentContent += '<br>' + templateContent;
+                } else {
+                    currentContent = templateContent;
                 }
-                $('.summernote').summernote('code', currentContent + templateContent);
+                $('.summernote').summernote('code', currentContent);
 
                 // Close preview
                 $('#templatePreview').hide();
@@ -918,6 +1136,13 @@
             $('#templateList').show();
             selectedTemplate = null;
         });
+
+        function cleanEditorContent(html) {
+            // Hapus <br>, <p><br></p>, <p></p> di awal dan akhir
+            html = html.replace(/^(<br\s*\/?>|<p><br\s*\/?><\/p>|<p>\s*<\/p>)+/gi, '');
+            html = html.replace(/(<br\s*\/?>|<p><br\s*\/?><\/p>|<p>\s*<\/p>)+$/gi, '');
+            return html.trim();
+        }
     });
 </script>
 @endpush

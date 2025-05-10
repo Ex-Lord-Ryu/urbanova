@@ -23,7 +23,14 @@ class Setting extends Model
      */
     public static function get(string $key, $default = null)
     {
-        return Cache::remember("setting.{$key}", 3600, function () use ($key, $default) {
+        // For critical settings like show_featured_badge, always get fresh value
+        if ($key === 'show_featured_badge') {
+            $setting = static::where('key', $key)->first();
+            return $setting ? $setting->value : $default;
+        }
+
+        // For other settings, use cache with shorter duration
+        return Cache::remember("setting.{$key}", 60, function () use ($key, $default) {
             $setting = static::where('key', $key)->first();
             return $setting ? $setting->value : $default;
         });
@@ -57,7 +64,7 @@ class Setting extends Model
     public function getValueAttribute($value)
     {
         if ($this->type === 'boolean') {
-            return (bool) $value;
+            return $value === '1' || $value === 1 || $value === true || $value === 'true';
         }
 
         if ($this->type === 'integer') {
@@ -76,10 +83,24 @@ class Setting extends Model
      */
     public function setValueAttribute($value)
     {
-        if ($this->type === 'array' || $this->type === 'json') {
+        if ($this->type === 'boolean') {
+            $this->attributes['value'] = $value ? '1' : '0';
+        } else if ($this->type === 'array' || $this->type === 'json') {
             $this->attributes['value'] = json_encode($value);
         } else {
             $this->attributes['value'] = (string) $value;
         }
+    }
+
+    /**
+     * Clear all settings cache
+     */
+    public static function clearCache()
+    {
+        $settings = static::all();
+        foreach ($settings as $setting) {
+            Cache::forget("setting.{$setting->key}");
+        }
+        return true;
     }
 }

@@ -90,8 +90,9 @@ class ShopController extends Controller
         // Selected price range
         $selectedPrice = $request->price;
 
-        // Get setting for showing featured badge
-        $showFeaturedBadge = Setting::get('show_featured_badge', true);
+        // Get setting for showing featured badge - force direct DB query without cache
+        $showFeaturedBadge = Setting::where('key', 'show_featured_badge')->first();
+        $showFeaturedBadge = $showFeaturedBadge ? (bool)$showFeaturedBadge->value : false;
 
         return view('shop.shop', compact(
             'products',
