@@ -79,7 +79,17 @@
         <div class="d-flex align-items-center mb-4">
           <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://via.placeholder.com/100' }}" alt="{{ $product->name }}" width="90" class="rounded shadow-sm mr-4" style="background:#fff;">
           <div class="flex-grow-1">
-            <div class="h5 mb-1 font-weight-bold">{{ $product->name }} <span class="badge badge-secondary ml-2">{{ $size }}</span></div>
+            <div class="h5 mb-1 font-weight-bold">{{ $product->name }}
+              @if(isset($size) && $size)
+                <span class="badge badge-secondary ml-2">{{ $size }}</span>
+              @endif
+              @if(isset($color) && $color)
+                <span class="badge badge-secondary ml-1 d-inline-flex align-items-center">
+                  <span class="color-dot" style="display:inline-block;width:12px;height:12px;border-radius:50%;background-color:#{{ $color->hex_code }};margin-right:4px;"></span>
+                  {{ $color->name }}
+                </span>
+              @endif
+            </div>
             <div class="mb-1">
               <span class="text-muted small"><del>Rp {{ number_format($product->price + 20000, 0, ',', '.') }}</del></span>
               <span class="ml-2 h5 text-danger">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
@@ -96,7 +106,7 @@
           <h6 class="font-weight-bold mb-3">Recently Ordered</h6>
           <div class="d-flex flex-nowrap overflow-auto" style="gap: 20px;">
             @foreach($recent as $item)
-              <a href="{{ route('product.show', $item->id) }}" class="product-card-link">
+              <a href="{{ route('product.show', $item->slug) }}" class="product-card-link">
                 <div class="card border-0 shadow-sm text-center p-2" style="min-width:130px;max-width:130px;background:#fff;">
                   <img src="{{ $item->image ? asset('storage/' . $item->image) : 'https://via.placeholder.com/80' }}" alt="{{ $item->name }}" width="80" class="rounded mb-2 mx-auto d-block" style="background:#f8f9fa;">
                   <div class="font-weight-600 small mb-1" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $item->name }}</div>

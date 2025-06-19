@@ -53,7 +53,7 @@
                             <table class="table table-striped products-table" id="table-colors">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">#</th>
+                                        <th class="text-center">No</th>
                                         <th>Warna</th>
                                         <th>Nama</th>
                                         <th>Kode Hex</th>
@@ -81,7 +81,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <span class="badge badge-light">{{ $color->products->count() }} Produk</span>
+                                            <span class="badge badge-light">0 Produk</span>
                                         </td>
                                         <td class="text-center">
                                             <div class="action-buttons">

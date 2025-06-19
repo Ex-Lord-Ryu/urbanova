@@ -3,14 +3,13 @@
 @section('title', 'Urbanova - Cart')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/cart/cart.css') }}">
     <style>
         .cart-page {
             padding: 40px 0;
             background-color: #f8f9fa;
         }
         .cart-container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 0 15px;
         }
@@ -295,6 +294,7 @@
                                 <tr>
                                     <th>Product</th>
                                     <th>Size</th>
+                                    <th>Color</th>
                                     <th>Price</th>
                                     <th>Qty</th>
                                     <th>Subtotal</th>
@@ -312,6 +312,16 @@
                                     </td>
                                     <td data-label="Size">
                                         <span class="product-size">{{ $item['size'] }}</span>
+                                    </td>
+                                    <td data-label="Color">
+                                        @if($item['color_name'] && $item['color_hex'])
+                                            <div class="d-flex align-items-center">
+                                                <span class="color-swatch mr-2" style="background-color: #{{ $item['color_hex'] }}; width: 18px; height: 18px; border-radius: 50%; display: inline-block; border: 1px solid #ddd;"></span>
+                                                <span class="product-color">{{ $item['color_name'] }}</span>
+                                            </div>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
                                     </td>
                                     <td data-label="Price" class="product-price">
                                         Rp {{ number_format($item['price'], 0, ',', '.') }}
@@ -366,12 +376,9 @@
                         <h3 class="cart-summary-title">Order Summary</h3>
                         <div class="mb-2 cart-total-label">Total Items: <span class="font-weight-bold">{{ count($cart) }}</span></div>
                         <div class="cart-total-price" id="cart-total">Rp {{ number_format($total, 0, ',', '.') }}</div>
-                        <form action="{{ route('checkout.process') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-checkout">
-                                <i class="fas fa-shopping-cart mr-2"></i> Checkout with Discount
-                            </button>
-                        </form>
+                        <a href="{{ route('checkout.index') }}" class="btn btn-checkout">
+                                <i class="fas fa-shopping-cart mr-2"></i> Checkout Products
+                        </a>
                     </div>
                 </div>
             </div>

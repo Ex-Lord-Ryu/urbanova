@@ -147,13 +147,14 @@
     $(document).ready(function() {
         // Automatic slug generation
         $('#name').on('keyup', function() {
-            if ($('#slug').val() === '') {
-                const name = $(this).val();
-                const slug = name.toLowerCase()
-                    .replace(/[^\w ]+/g, '')
-                    .replace(/ +/g, '-');
-                $('#slug').val(slug);
-            }
+            const name = $(this).val();
+            const slug = name.toLowerCase()
+                .replace(/[^\w ]+/g, '')
+                .replace(/ +/g, '_');
+            $('#slug').val(slug);
+
+            // Update preview with the full name
+            updateColorPreview();
         });
 
         // Color picker functionality

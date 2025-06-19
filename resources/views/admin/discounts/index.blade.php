@@ -20,6 +20,12 @@
             <h2 class="section-title">Daftar Produk dengan Diskon</h2>
             <p class="section-lead">Kelola semua diskon untuk produk di sini.</p>
 
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Sistem hanya mengatur tanggal akhir diskon minimal 1 hari setelah tanggal mulai.
+                <br>
+                <b>Info:</b> Diskon dengan status "Menunggu" akan aktif secara otomatis pada tanggal mulai yang ditentukan.
+            </div>
+
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -53,6 +59,9 @@
                                     </thead>
                                     <tbody>
                                         @forelse($products as $product)
+                                            @php
+                                                $activeDiscount = $product->activeDiscount();
+                                            @endphp
                                             <tr class="product-row">
                                                 <td>{{ $product->id }}</td>
                                                 <td>
@@ -76,8 +85,27 @@
                                                 </td>
                                                 <td>{{ $product->category->name }}</td>
                                                 <td>
-                                                    <span
-                                                        class="discount-badge">{{ $product->discount_percentage }}%</span>
+                                                    @php
+                                                        $discountPercentage = $product->discount_percentage;
+                                                        $isFuture = $activeDiscount && $activeDiscount->start_date && $activeDiscount->start_date->isFuture();
+
+                                                        // If no active discount but has future discount, get it
+                                                        if (!$activeDiscount && $discountPercentage > 0) {
+                                                            $futureDiscount = $product->discounts()
+                                                                ->where('percentage', '>', 0)
+                                                                ->where('start_date', '>', now())
+                                                                ->orderBy('start_date', 'asc')
+                                                                ->first();
+                                                            $isFuture = $futureDiscount !== null;
+                                                        }
+                                                    @endphp
+
+                                                    <span class="discount-badge {{ $isFuture ? 'text-warning' : '' }}">
+                                                        {{ $discountPercentage }}%
+                                                        @if($isFuture)
+                                                            <small>(Menunggu)</small>
+                                                        @endif
+                                                    </span>
                                                 </td>
                                                 <td>
                                                     <div class="price-container">
@@ -91,9 +119,9 @@
                                                 <td>
                                                     @if ($product->hasActiveDiscount())
                                                         <span class="badge badge-success">Aktif</span>
-                                                    @elseif($product->discount_start_date && $product->discount_start_date->isFuture())
-                                                        <span class="badge badge-warning">Menunggu</span>
-                                                    @elseif($product->discount_end_date && $product->discount_end_date->isPast())
+                                                    @elseif($activeDiscount && $activeDiscount->start_date && $activeDiscount->start_date->isFuture())
+                                                        <span class="badge badge-warning">Menunggu (Mulai {{ $activeDiscount->start_date->format('d M Y') }})</span>
+                                                    @elseif($activeDiscount && $activeDiscount->end_date && $activeDiscount->end_date->isPast())
                                                         <span class="badge badge-danger">Berakhir</span>
                                                     @else
                                                         <span class="badge badge-secondary">Tidak Aktif</span>
@@ -101,16 +129,16 @@
                                                 </td>
                                                 <td>
                                                     <div class="discount-period">
-                                                        @if ($product->discount_start_date)
+                                                        @if ($activeDiscount && $activeDiscount->start_date)
                                                             <small>Mulai:
-                                                                {{ $product->discount_start_date->format('d M Y') }}</small>
+                                                                {{ $activeDiscount->start_date->format('d M Y') }}</small>
                                                         @else
                                                             <small>Mulai: Langsung</small>
                                                         @endif
                                                         <br>
-                                                        @if ($product->discount_end_date)
+                                                        @if ($activeDiscount && $activeDiscount->end_date)
                                                             <small>Berakhir:
-                                                                {{ $product->discount_end_date->format('d M Y') }}</small>
+                                                                {{ $activeDiscount->end_date->format('d M Y') }}</small>
                                                         @else
                                                             <small>Berakhir: Tidak dibatasi</small>
                                                         @endif

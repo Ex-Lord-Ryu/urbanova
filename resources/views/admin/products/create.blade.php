@@ -51,6 +51,21 @@
             padding: 15px;
             margin-bottom: 15px;
             background-color: #f9f9f9;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .template-list-container {
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .template-preview-container {
+            border: 1px solid #e3e6f0;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
         }
         .template-item {
             padding: 10px;
@@ -64,6 +79,11 @@
         .template-item:hover {
             border-color: #6777ef;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .template-item.active {
+            border-color: #6777ef;
+            border-left: 3px solid #6777ef;
+            background-color: #f8f9fc;
         }
         .template-item-header {
             display: flex;
@@ -90,18 +110,16 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
         }
-        #templatePreview {
-            border: 1px solid #e3e6f0;
-            border-radius: 5px;
-            padding: 15px;
-            background-color: white;
-        }
         .preview-content {
-            min-height: 100px;
+            min-height: 200px;
+            max-height: 300px;
+            overflow-y: auto;
             margin-bottom: 10px;
-            padding: 10px;
+            padding: 15px;
             border: 1px solid #f1f1f1;
             border-radius: 4px;
+            background-color: #fdfdfd;
+            flex: 1;
         }
     </style>
 @endpush
@@ -128,10 +146,16 @@
                         <h4 class="products-title mb-0">Form Tambah Produk</h4>
                     </div>
                     <div class="card-body">
+
                         <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-7">
+                                    <div class="form-section">
+                                        <h5 class="section-title">
+                                            <i class="fas fa-info-circle mr-2"></i>Informasi Dasar
+                                        </h5>
+
                                     <div class="form-group">
                                         <label for="category_id">Kategori <span class="text-danger">*</span></label>
                                         <select class="form-control @error('category_id') is-invalid @enderror" id="category_id" name="category_id" required>
@@ -167,187 +191,53 @@
                                         </div>
                                         @enderror
                                     </div>
-
-                                    <div class="form-group">
-                                        <label for="price">Harga <span class="text-danger">*</span></label>
-                                        <div class="price-system">
-                                            <div class="form-check mb-3">
-                                                <input class="form-check-input" type="radio" name="price_type" id="priceTypeSingle" value="single" checked>
-                                                <label class="form-check-label" for="priceTypeSingle">
-                                                    Harga Satuan
-                                                </label>
-                                            </div>
-                                            <div class="form-check mb-3">
-                                                <input class="form-check-input" type="radio" name="price_type" id="priceTypeRange" value="range">
-                                                <label class="form-check-label" for="priceTypeRange">
-                                                    Harga dengan Range
-                                                </label>
                                             </div>
 
-                                            <div id="singlePriceSection">
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">Rp</span>
-                                                    </div>
-                                                    <input type="text" class="form-control @error('price') is-invalid @enderror" id="display-price" placeholder="0" required>
-                                                    <input type="hidden" name="price" id="real-price" value="{{ old('price') }}">
-                                                </div>
-                                                <small class="text-muted">Contoh: 1.000.000</small>
-                                            </div>
+                                    <div class="form-section mt-4">
+                                        <h5 class="section-title">
+                                            <i class="fas fa-file-alt mr-2"></i>Deskripsi
+                                        </h5>
 
-                                            <div id="rangePriceSection" style="display: none;">
+                                        <div class="row">
+                                            <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label>Harga Dasar</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">Rp</span>
-                                                        </div>
-                                                        <input type="text" class="form-control" id="base-price" placeholder="0">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Persentase Kenaikan per Size</label>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control" id="price-increase" placeholder="0" min="0" max="100">
-                                                        <div class="input-group-append">
-                                                            <span class="input-group-text">%</span>
-                                                        </div>
-                                                    </div>
+                                                    <label for="description">Deskripsi Produk</label>
+                                                    <div class="template-selector-header">
+                                                        <div>
+                                                            <button type="button" class="btn btn-sm btn-outline-primary" id="showTemplateSelector">
+                                                                <i class="fas fa-puzzle-piece mr-1"></i> Tambah Template
+                                                            </button>
                                                 </div>
                                             </div>
 
-                                            <div id="sizePricesSection" class="mt-3">
-                                                <h6>Harga per Size</h6>
-                                                <div class="size-prices">
-                                                    <div class="form-group">
-                                                        <label>XS</label>
+                                                    <div id="templateSelectorModal" style="display: none;">
+                                                        <div class="mb-3">
                                                         <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text">Rp</span>
-                                                            </div>
-                                                            <input type="text" class="form-control size-price" data-size="XS" name="size_prices[XS]" placeholder="0">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>S</label>
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text">Rp</span>
-                                                            </div>
-                                                            <input type="text" class="form-control size-price" data-size="S" name="size_prices[S]" placeholder="0">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>M</label>
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text">Rp</span>
-                                                            </div>
-                                                            <input type="text" class="form-control size-price" data-size="M" name="size_prices[M]" placeholder="0">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>L</label>
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text">Rp</span>
-                                                            </div>
-                                                            <input type="text" class="form-control size-price" data-size="L" name="size_prices[L]" placeholder="0">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>XL</label>
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text">Rp</span>
-                                                            </div>
-                                                            <input type="text" class="form-control size-price" data-size="XL" name="size_prices[XL]" placeholder="0">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>XXL</label>
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text">Rp</span>
-                                                            </div>
-                                                            <input type="text" class="form-control size-price" data-size="XXL" name="size_prices[XXL]" placeholder="0">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @error('price')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="stock">Stok <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control @error('stock') is-invalid @enderror" id="stock" name="stock" value="{{ old('stock', 0) }}" min="0" required>
-                                        <div class="text-warning mt-1" id="stock-warning" style="display: none;">
-                                            <i class="fas fa-exclamation-triangle"></i> Jika anda menggunakan ukuran, nilai stok ini akan digunakan untuk semua ukuran yang tidak memiliki stok spesifik.
-                                        </div>
-                                        @error('stock')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="description">Deskripsi</label>
-                                        <div class="template-selector">
-                                            <div class="template-selector-header">
-                                                <h6 class="template-selector-title">Template Deskripsi</h6>
-                                                <button type="button" class="btn btn-sm btn-primary" id="showTemplateSelector">
-                                                    <i class="fas fa-plus-circle"></i> Tambah Template
+                                                                <input type="text" class="form-control" id="templateSearch" placeholder="Cari template...">
+                                                                <div class="input-group-append">
+                                                                    <button class="btn btn-outline-secondary" type="button" id="closeTemplateSelector">
+                                                                        <i class="fas fa-times"></i>
                                                 </button>
                                             </div>
-
-                                            <div id="templateSelectorModal" style="display: none;">
-                                                <div class="form-group">
-                                                    <select class="form-control" id="templateCategory">
-                                                        <option value="">Semua Kategori</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="template-list" id="templateList">
-                                                    <div class="text-center py-3">
-                                                        <div class="spinner-border text-primary" role="status">
-                                                            <span class="sr-only">Loading...</span>
-                                                        </div>
-                                                        <p class="mt-2">Memuat template...</p>
                                                     </div>
                                                 </div>
 
-                                                <div class="template-preview" id="templatePreview" style="display: none;">
-                                                    <h6>Pratinjau Template</h6>
-                                                    <div class="preview-content" id="previewContent"></div>
-                                                    <div class="mt-2 text-right">
-                                                        <button type="button" class="btn btn-sm btn-secondary" id="closePreview">Kembali</button>
-                                                        <button type="button" class="btn btn-sm btn-primary" id="useTemplate">Gunakan Template</button>
+                                                        <div class="template-list-container">
+                                                            @foreach(\App\Models\DescriptionTemplate::where('is_active', true)->get() as $template)
+                                                            <div class="template-item" data-id="{{ $template->id }}">
+                                                                <div class="template-item-header">
+                                                                    <div class="template-item-name">{{ $template->name }}</div>
+                                                                    @if($template->category)
+                                                                    <div class="template-item-category">{{ $template->category }}</div>
+                                                                    @endif
                                                     </div>
-                                                </div>
-
-                                                <div class="mt-2 text-right">
-                                                    <button type="button" class="btn btn-sm btn-secondary" id="closeTemplateSelector">Tutup</button>
-                                                </div>
-                                            </div>
-
-                                            <div class="selected-templates" id="selectedTemplates">
-                                                @if(is_array(old('description_templates')))
-                                                    @foreach(old('description_templates') as $templateId)
-                                                        <div class="selected-template-item" data-id="{{ $templateId }}">
-                                                            <span class="selected-template-name">Template #{{ $templateId }}</span>
-                                                            <input type="hidden" name="description_templates[]" value="{{ $templateId }}">
-                                                            <span class="selected-template-remove"><i class="fas fa-times"></i></span>
+                                                                <div class="template-item-content">{{ Str::limit(strip_tags($template->content), 100) }}</div>
                                                         </div>
                                                     @endforeach
-                                                @endif
                                             </div>
                                         </div>
+
+                                                    <div class="selected-templates" id="selectedTemplates"></div>
 
                                         <textarea class="form-control summernote @error('description') is-invalid @enderror" id="description" name="description">{{ old('description') }}</textarea>
                                         @error('description')
@@ -355,105 +245,17 @@
                                             {{ $message }}
                                         </div>
                                         @enderror
-                                        <small class="form-text text-muted">Tambahan deskripsi manual (opsional).</small>
                                     </div>
                                 </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Ukuran Tersedia</label>
-                                        <div class="form-group">
-                                            <div class="selectgroup selectgroup-pills size-options">
-                                                @foreach($sizes as $size)
-                                                <label class="selectgroup-item">
-                                                    <input type="checkbox" name="sizes[]" value="{{ $size->id }}" class="selectgroup-input size-checkbox" {{ is_array(old('sizes')) && in_array($size->id, old('sizes')) ? 'checked' : '' }}>
-                                                    <span class="selectgroup-button">{{ $size->name }}</span>
-                                                </label>
-                                                @endforeach
                                             </div>
-
-                                    <div class="mt-3 mb-3">
-                                        <h6 class="text-primary">Stok per Ukuran</h6>
-                                        <p class="text-muted small">Jika tidak diisi, akan menggunakan stok global</p>
-                                        <div class="size-stock-container">
-                                            @foreach($sizes as $size)
-                                            <div class="form-group size-stock-item" data-size-id="{{ $size->id }}" style="display: none;">
-                                                <label for="size_stock_{{ $size->id }}">Stok untuk {{ $size->name }}</label>
-                                                <input type="number" class="form-control" id="size_stock_{{ $size->id }}" name="size_stock_{{ $size->id }}" value="{{ old('size_stock_' . $size->id, 0) }}" min="0">
-                                            </div>
-                                            @endforeach
                                         </div>
                                     </div>
 
-                                    <p class="text-muted mb-2 mt-3">Tambahkan ukuran baru:</p>
-                                    <div class="size-input-group">
-                                        <input type="text" id="new-size" class="form-control" placeholder="Nama ukuran baru">
-                                        <button type="button" id="add-size-btn" class="add-size-btn">
-                                            <i class="fas fa-plus mr-1"></i> Tambah
-                                        </button>
-                                    </div>
-                                    <div id="size-chips" class="size-chips">
-                                        @if(is_array(old('sizes')))
-                                            @foreach(old('sizes') as $sizeValue)
-                                                @if(!is_numeric($sizeValue))
-                                                <div class="size-chip">
-                                                    {{ $sizeValue }}
-                                                    <input type="hidden" name="sizes[]" value="{{ $sizeValue }}">
-                                                    <span class="chip-remove"><i class="fas fa-times"></i></span>
-                                                </div>
-                                                @endif
-                                            @endforeach
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Warna Tersedia</label>
-                                <div class="color-options">
-                                    <!-- Database Colors -->
-                                    <p class="text-muted mb-2">Pilih warna tersedia:</p>
-                                    <div class="selectgroup selectgroup-pills color-options">
-                                        @foreach($colors as $color)
-                                        <label class="selectgroup-item">
-                                            <input type="checkbox" name="colors[]" value="{{ $color->id }}" class="selectgroup-input color-checkbox"
-                                                {{ is_array(old('colors')) && in_array($color->id, old('colors')) ? 'checked' : '' }}>
-                                            <span class="selectgroup-button">
-                                                <span class="color-dot" style="background-color: #{{ $color->hex_code }}"></span>
-                                                {{ $color->name }}
-                                            </span>
-                                        </label>
-                                        @endforeach
-                                    </div>
-
-                                    <!-- Custom Colors -->
-                                    <p class="text-muted mb-2 mt-3">Tambahkan warna kustom:</p>
-                                    <div class="color-input-group">
-                                        <input type="text" id="new-color" class="form-control" placeholder="Nama warna baru">
-                                        <input type="color" id="color-picker" class="form-control color-picker" value="#6777ef">
-                                        <button type="button" id="add-color-btn" class="add-color-btn">
-                                            <i class="fas fa-plus mr-1"></i> Tambah
-                                        </button>
-                                    </div>
-
-                                    <!-- Color Chips - Will show selected colors -->
-                                    <div id="color-chips" class="color-chips">
-                                        @if(is_array(old('colors')))
-                                            @foreach(old('colors') as $colorValue)
-                                                @if(!is_numeric($colorValue))
-                                                <div class="color-chip">
-                                                    <span class="chip-color-dot" style="background-color: {{ \App\Helpers\ColorHelper::getColorHex($colorValue) }}"></span>
-                                                    {{ $colorValue }}
-                                                    <input type="hidden" name="colors[]" value="{{ $colorValue }}">
-                                                    <input type="hidden" name="color_hex_codes[]" value="{{ substr(\App\Helpers\ColorHelper::getColorHex($colorValue), 1) }}">
-                                                    <span class="chip-remove"><i class="fas fa-times"></i></span>
-                                                </div>
-                                                @endif
-                                            @endforeach
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
+                                <div class="col-md-5">
+                                    <div class="form-section">
+                                        <h5 class="section-title">
+                                            <i class="fas fa-image mr-2"></i>Gambar Produk
+                                        </h5>
 
                             <div class="form-group">
                                 <label for="image">Gambar Utama</label>
@@ -485,7 +287,13 @@
                                 @enderror
                                 <div id="additional-images-preview" class="file-preview mt-2"></div>
                                 <small class="form-text text-muted">Format: JPG, PNG, JPEG, GIF. Maks: 2MB per file. Maksimal 5 file.</small>
+                                        </div>
                             </div>
+
+                                    <div class="form-section mt-4">
+                                        <h5 class="section-title">
+                                            <i class="fas fa-cog mr-2"></i>Pengaturan
+                                        </h5>
 
                             <div class="form-group form-switch-container">
                                 <label class="custom-switch mt-2">
@@ -501,6 +309,21 @@
                                     <span class="custom-switch-indicator"></span>
                                     <span class="custom-switch-description">Aktif</span>
                                 </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section mt-4">
+                                        <h5 class="section-title">
+                                            <i class="fas fa-eye mr-2"></i>Preview Template
+                                        </h5>
+                                        <div id="templatePreview" class="template-preview-container">
+                                            <div class="preview-content">
+                                                <p class="text-muted text-center">Pilih template untuk melihat preview</p>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-primary btn-block" id="insertTemplate" disabled>
+                                                <i class="fas fa-plus mr-1"></i> Masukkan Template
+                                            </button>
+                                        </div>
                             </div>
                         </div>
                     </div>
@@ -512,6 +335,8 @@
                         <a href="{{ route('products.index') }}" class="btn btn-secondary btn-lg ml-2">
                             <i class="fas fa-times mr-1"></i> Batal
                         </a>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -522,56 +347,8 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-<script src="{{ asset('js/admin/products/price-system.js') }}"></script>
 <script>
     $(document).ready(function() {
-        // Initialize size stock visibility
-        $('.size-checkbox').each(function() {
-            if ($(this).is(':checked')) {
-                const sizeId = $(this).val();
-                $(`.size-stock-item[data-size-id="${sizeId}"]`).show();
-                // Show warning if any size is checked
-                $('#stock-warning').show();
-            }
-        });
-
-        // Size checkbox change event
-        $('.size-checkbox').on('change', function() {
-            const sizeId = $(this).val();
-            const isChecked = $(this).is(':checked');
-
-            // Show/hide the stock input for this size
-            if (isChecked) {
-                $(`.size-stock-item[data-size-id="${sizeId}"]`).show();
-                // Populate with global stock value if it's zero
-                const currentSizeStock = $(`#size_stock_${sizeId}`).val();
-                if (currentSizeStock === '0' || currentSizeStock === '') {
-                    $(`#size_stock_${sizeId}`).val($('#stock').val());
-                }
-                // Show the warning message
-                $('#stock-warning').show();
-            } else {
-                $(`.size-stock-item[data-size-id="${sizeId}"]`).hide();
-                // Hide warning if no sizes are checked
-                if ($('.size-checkbox:checked').length === 0) {
-                    $('#stock-warning').hide();
-                }
-            }
-        });
-
-        // When global stock changes, update all empty size stocks
-        $('#stock').on('change', function() {
-            const globalStock = $(this).val();
-            $('.size-checkbox:checked').each(function() {
-                const sizeId = $(this).val();
-                const sizeStockField = $(`#size_stock_${sizeId}`);
-                // Only update if the current value is 0
-                if (sizeStockField.val() === '0' || sizeStockField.val() === '') {
-                    sizeStockField.val(globalStock);
-                }
-            });
-        });
-
         // Initialize Summernote WYSIWYG editor
         $('.summernote').summernote({
             height: 200,
@@ -592,110 +369,131 @@
             }
         });
 
-        // Price formatting
-        function formatNumberWithDots(number) {
-            if (!number) return '';
+        // Template content definitions
+        const templateContents = {};
 
-            // Convert to string and clean up the number first
-            let cleanNumber = number;
-            if (typeof cleanNumber === 'string') {
-                // Remove all dots and replace commas with dots
-                cleanNumber = cleanNumber.replace(/\./g, '');
-                cleanNumber = cleanNumber.replace(/,/g, '.');
-            }
-
-            // Ensure it's a valid number
-            if (isNaN(Number(cleanNumber))) {
-                console.error('Invalid number format:', number);
-                return '0';
-            }
-
-            // Get the integer part only for formatting
-            const integerPart = Math.floor(Number(cleanNumber)).toString();
-
-            // Format with dots as thousand separators (Indonesian format)
-            return integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        // Load template contents via AJAX
+        function loadTemplateContents() {
+            $.ajax({
+                url: "{{ route('description-templates.json') }}",
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    // Store all templates in our object
+                    data.forEach(template => {
+                        templateContents[template.id] = template.content;
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error loading templates:", error);
+                }
+            });
         }
 
-        // Initialize price display if value exists
-        var initialPrice = $('#real-price').val();
-        if (initialPrice) {
-            const initialDisplayPrice = formatNumberWithDots(initialPrice);
-            $('#display-price').val(initialDisplayPrice);
-        }
+        // Call the function to load templates
+        loadTemplateContents();
 
-        // Handle price input changes
-        $('#display-price').on('input', function(e) {
-            // Ambil nilai input saat ini dan hapus semua karakter kecuali angka
-            let inputValue = $(this).val().replace(/[^\d]/g, '');
+        // Add form submit handler to check for templates before submission
+        $('form').on('submit', function(e) {
+            console.log('Form submitted with templates:', $('.selected-template-item').length);
+            console.log('Template IDs:', $('input[name="description_templates[]"]').map(function() {
+                return $(this).val();
+            }).get());
 
-            // Jika kosong, tampilkan kosong
-            if (inputValue === '') {
-                $(this).val('');
-                $('#real-price').val('');
-                return;
+            // Make sure we have at least one hidden input for templates array even if empty
+            if ($('input[name="description_templates[]"]').length === 0) {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'description_templates[]',
+                    value: ''
+                }).appendTo(this);
             }
 
-            // Simpan nilai bersih ke hidden field
-            $('#real-price').val(inputValue);
+            // Remove any previous dummy stock/price inputs that might have been added
+            $('input[name="stock"]').remove();
+            $('input[name="price"]').remove();
 
-            // Format ulang dan tampilkan (tanpa padding angka 0 di depan)
-            const formattedValue = formatNumberWithDots(inputValue);
-            $(this).val(formattedValue);
+            return true;
         });
 
-        // Tambahkan validasi form sebelum submit untuk memastikan stok ukuran terisi
-        $('form').on('submit', function(e) {
-            // Validasi harga...
-            const displayValue = $('#display-price').val();
-            const cleanValue = displayValue.replace(/\./g, '');
-            $('#real-price').val(cleanValue);
+        // Templates Functionality
+        $('#showTemplateSelector').on('click', function() {
+            $('#templateSelectorModal').slideDown(300);
+        });
 
-            // Handle price system values
-            const priceType = $('input[name="price_type"]:checked').val();
-            if (priceType === 'range') {
-                // Format and set base price
-                const basePrice = $('#base-price').val().replace(/\./g, '');
-                $('<input>').attr({
-                    type: 'hidden',
-                    name: 'base_price',
-                    value: basePrice
-                }).appendTo('form');
+        $('#closeTemplateSelector').on('click', function() {
+            $('#templateSelectorModal').slideUp(300);
+        });
 
-                // Set price increase
-                const priceIncrease = $('#price-increase').val();
-                $('<input>').attr({
-                    type: 'hidden',
-                    name: 'price_increase',
-                    value: priceIncrease
-                }).appendTo('form');
+        // Handle template item click
+        $('.template-item').on('click', function() {
+            $('.template-item').removeClass('active');
+            $(this).addClass('active');
 
-                // Format size prices
-                $('.size-price').each(function() {
-                    const input = $(this);
-                    const value = input.val();
-                    if (value) {
-                        input.val(value.replace(/\./g, ''));
-                    }
-                });
+            const templateId = $(this).data('id');
+            const templateContent = templateContents[templateId];
+
+            $('#templatePreview .preview-content').html(templateContent);
+            $('#insertTemplate').prop('disabled', false);
+        });
+
+        // Filter templates when searching
+        $('#templateSearch').on('input', function() {
+            const searchText = $(this).val().toLowerCase();
+            $('.template-item').each(function() {
+                const name = $(this).find('.template-item-name').text().toLowerCase();
+                const category = $(this).find('.template-item-category').text().toLowerCase();
+                const content = $(this).find('.template-item-content').text().toLowerCase();
+
+                if (name.includes(searchText) || category.includes(searchText) || content.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        // Insert template into editor
+        $('#insertTemplate').on('click', function() {
+            const $activeTemplate = $('.template-item.active');
+            if ($activeTemplate.length) {
+                const templateId = $activeTemplate.data('id');
+                const templateName = $activeTemplate.find('.template-item-name').text();
+                const templateContent = templateContents[templateId];
+
+                if (!templateContent) {
+                    console.error('Template content not loaded yet');
+                    alert('Konten template belum dimuat. Silakan coba lagi.');
+                    return;
+                }
+
+                // Insert into Summernote
+                const currentContent = $('.summernote').summernote('code');
+                $('.summernote').summernote('code', currentContent + templateContent);
+
+                // Add to selected templates list
+                const templateItem = `
+                    <div class="selected-template-item" data-id="${templateId}">
+                        <div class="selected-template-name">${templateName}</div>
+                        <input type="hidden" name="description_templates[]" value="${templateId}">
+                        <div class="selected-template-remove"><i class="fas fa-times"></i></div>
+                    </div>
+                `;
+                $('#selectedTemplates').append(templateItem);
+
+                // Hide template selector
+                $('#templateSelectorModal').slideUp(300);
+                $('#insertTemplate').prop('disabled', true);
+                $('.template-item').removeClass('active');
+                $('#templatePreview .preview-content').html('<p class="text-muted text-center">Pilih template untuk melihat preview</p>');
             }
+        });
 
-            // Validasi stok ukuran
-            let hasSizes = $('.size-checkbox:checked').length > 0;
-            if (hasSizes) {
-                let hasEmptyStock = false;
-                $('.size-checkbox:checked').each(function() {
-                    const sizeId = $(this).val();
-                    const stockField = $(`#size_stock_${sizeId}`);
-                    if (stockField.val() === '' || stockField.val() === '0') {
-                        hasEmptyStock = true;
-                        stockField.val($('#stock').val()); // Isi dengan stok global
-                    }
-                });
-            }
-
-            console.log('Nilai harga yang dikirim:', cleanValue);
-            return true;
+        // Remove selected template
+        $(document).on('click', '.selected-template-remove', function() {
+            $(this).parent('.selected-template-item').fadeOut(300, function() {
+                $(this).remove();
+            });
         });
 
         // Custom file input
@@ -740,7 +538,7 @@
             }
         });
 
-        // Also trigger file input on button click (for better UX)
+        // Trigger file input on button click
         $(".file-input-btn").on("click", function(e) {
             e.preventDefault();
             $(this).siblings('.file-input').click();
@@ -765,200 +563,6 @@
             }
         });
 
-        // Color management
-        $('#add-color-btn').on('click', function() {
-            addNewColor();
-        });
-
-        $('#new-color').on('keypress', function(e) {
-            if (e.which === 13) {
-                e.preventDefault();
-                addNewColor();
-            }
-        });
-
-        // Size management
-        $('#add-size-btn').on('click', function() {
-            addNewSize();
-        });
-
-        $('#new-size').on('keypress', function(e) {
-            if (e.which === 13) {
-                e.preventDefault();
-                addNewSize();
-            }
-        });
-
-        // Remove color/size chip when X is clicked
-        $(document).on('click', '.chip-remove', function() {
-            $(this).closest('.color-chip, .size-chip').remove();
-        });
-
-        // Function to add a new color
-        function addNewColor() {
-            const colorInput = $('#new-color');
-            const colorName = colorInput.val().trim();
-            const colorHex = $('#color-picker').val().replace('#', '');
-
-            if (colorName !== '') {
-                // Check if color already exists
-                let exists = false;
-
-                // Check in database colors
-                $('.color-checkbox').each(function() {
-                    const colorText = $(this).closest('.selectgroup-item').find('.selectgroup-button').text().trim();
-                    if (colorText === colorName) {
-                        exists = true;
-                        return false; // Break loop
-                    }
-                });
-
-                // Check in custom chips
-                if (!exists) {
-                    $('.color-chip').each(function() {
-                        const chipText = $(this).text().trim().replace('×', '').trim();
-                        if (chipText === colorName) {
-                            exists = true;
-                            return false; // Break loop
-                        }
-                    });
-                }
-
-                if (exists) {
-                    alert('Warna tersebut sudah dipilih!');
-                    return;
-                }
-
-                // Create a color chip with the new color
-                const colorChip = `
-                    <div class="color-chip">
-                        <span class="chip-color-dot" style="background-color: #${colorHex}"></span>
-                        ${colorName}
-                        <input type="hidden" name="colors[]" value="${colorName}">
-                        <input type="hidden" name="color_hex_codes[]" value="${colorHex}">
-                        <span class="chip-remove"><i class="fas fa-times"></i></span>
-                    </div>
-                `;
-
-                $('#color-chips').append(colorChip);
-                colorInput.val('');
-
-                // Save color to database via AJAX and update dropdown
-                $.ajax({
-                    url: '{{ route("colors.ajax.store") }}',
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        name: colorName,
-                        hex_code: colorHex,
-                        is_active: 1
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // Add new color to selectbox
-                            const newColorOption = `
-                                <label class="selectgroup-item">
-                                    <input type="checkbox" name="colors[]" value="${response.color.id}" class="selectgroup-input color-checkbox" checked>
-                                    <span class="selectgroup-button">
-                                        <span class="color-dot" style="background-color: #${colorHex}"></span>
-                                        ${colorName}
-                                    </span>
-                                </label>
-                            `;
-                            $('.color-options .selectgroup-pills').append(newColorOption);
-
-                            // Remove the custom chip since we're now using the database color
-                            $('.color-chip').each(function() {
-                                const chipText = $(this).text().trim().replace('×', '').trim();
-                                if (chipText === colorName) {
-                                    $(this).remove();
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        }
-
-        // Function to add a new size
-        function addNewSize() {
-            const sizeInput = $('#new-size');
-            const sizeName = sizeInput.val().trim();
-
-            if (sizeName !== '') {
-                // Check if size already exists
-                let exists = false;
-
-                // Check in database sizes
-                $('.selectgroup-input[name="sizes[]"]').each(function() {
-                    const sizeText = $(this).closest('.selectgroup-item').find('.selectgroup-button').text().trim();
-                    if (sizeText === sizeName) {
-                        exists = true;
-                        return false; // Break loop
-                    }
-                });
-
-                // Check in custom chips
-                if (!exists) {
-                    $('.size-chip').each(function() {
-                        const chipText = $(this).text().trim().replace('×', '').trim();
-                        if (chipText === sizeName) {
-                            exists = true;
-                            return false; // Break loop
-                        }
-                    });
-                }
-
-                if (exists) {
-                    alert('Ukuran tersebut sudah dipilih!');
-                    return;
-                }
-
-                // Create a size chip
-                const sizeChip = `
-                    <div class="size-chip">
-                        ${sizeName}
-                        <input type="hidden" name="sizes[]" value="${sizeName}">
-                        <span class="chip-remove"><i class="fas fa-times"></i></span>
-                    </div>
-                `;
-
-                $('#size-chips').append(sizeChip);
-                sizeInput.val('');
-
-                // Save size to database via AJAX and update dropdown
-                $.ajax({
-                    url: '{{ route("sizes.ajax.store") }}',
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        name: sizeName,
-                        is_active: 1
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // Add new size to selectbox
-                            const newSizeOption = `
-                                <label class="selectgroup-item">
-                                    <input type="checkbox" name="sizes[]" value="${response.size.id}" class="selectgroup-input" checked>
-                                    <span class="selectgroup-button">${sizeName}</span>
-                                </label>
-                            `;
-                            $('.size-options.selectgroup-pills').append(newSizeOption);
-
-                            // Remove the custom chip since we're now using the database size
-                            $('.size-chip').each(function() {
-                                const chipText = $(this).text().trim().replace('×', '').trim();
-                                if (chipText === sizeName) {
-                                    $(this).remove();
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        }
-
         // Add animation to form elements
         $('input:not(.file-input), select, textarea').each(function(index) {
             const $this = $(this);
@@ -970,179 +574,6 @@
                 }, 50);
             }, index * 50);
         });
-
-        // Template selector functionality
-        let templates = [];
-        let selectedTemplate = null;
-
-        // Load template categories
-        $.ajax({
-            url: '{{ route("description-templates.json") }}',
-            type: 'GET',
-            success: function(data) {
-                templates = data;
-
-                // Populate name for templates already selected
-                const selectedItems = $('#selectedTemplates .selected-template-item');
-                selectedItems.each(function() {
-                    const templateId = parseInt($(this).data('id'));
-                    const template = templates.find(t => t.id === templateId);
-                    if (template) {
-                        $(this).find('.selected-template-name').text(template.name);
-                    }
-                });
-
-                // Extract unique categories
-                const categories = [...new Set(templates.map(t => t.category).filter(Boolean))];
-
-                // Populate category dropdown
-                categories.forEach(category => {
-                    $('#templateCategory').append(`<option value="${category}">${category}</option>`);
-                });
-
-                // Render templates
-                renderTemplates();
-            },
-            error: function() {
-                $('#templateList').html('<div class="alert alert-danger">Gagal memuat template. Silakan coba lagi.</div>');
-            }
-        });
-
-        function renderTemplates(category = '') {
-            let filteredTemplates = templates;
-            if (category) {
-                filteredTemplates = templates.filter(t => t.category === category);
-            }
-
-            if (filteredTemplates.length === 0) {
-                $('#templateList').html('<div class="alert alert-info">Tidak ada template yang tersedia.</div>');
-                return;
-            }
-
-            let html = '';
-            filteredTemplates.forEach(template => {
-                // Check if already selected
-                const isSelected = $('#selectedTemplates').find(`[data-id="${template.id}"]`).length > 0;
-                if (!isSelected) {
-                    html += `
-                        <div class="template-item" data-id="${template.id}">
-                            <div class="template-item-header">
-                                <span class="template-item-name">${template.name}</span>
-                                ${template.category ? `<span class="template-item-category">${template.category}</span>` : ''}
-                            </div>
-                            <div class="template-item-content">${template.content.substring(0, 100)}${template.content.length > 100 ? '...' : ''}</div>
-                        </div>
-                    `;
-                }
-            });
-
-            $('#templateList').html(html);
-
-            // Attach click event to template items
-            $('.template-item').on('click', function() {
-                const templateId = $(this).data('id');
-                selectedTemplate = templates.find(t => t.id === templateId);
-
-                // Show preview
-                $('#templateList').hide();
-                $('#templatePreview').show();
-
-                // Replace placeholder variables with sample values
-                let previewContent = selectedTemplate.content;
-                previewContent = previewContent.replace(/\[product_name\]/g, $('#name').val() || 'Nama Produk');
-                previewContent = previewContent.replace(/\[category\]/g, $('#category_id option:selected').text() || 'Kategori');
-                previewContent = previewContent.replace(/\[price\]/g, 'Rp ' + ($('#display-price').val() || '0'));
-
-                $('#previewContent').html(previewContent);
-            });
-        }
-
-        // Filter templates by category
-        $('#templateCategory').on('change', function() {
-            renderTemplates($(this).val());
-        });
-
-        // Close preview
-        $('#closePreview').on('click', function() {
-            $('#templatePreview').hide();
-            $('#templateList').show();
-            selectedTemplate = null;
-        });
-
-        // Use template
-        $('#useTemplate').on('click', function() {
-            if (selectedTemplate) {
-                // Add to selected templates
-                const templateHtml = `
-                    <div class="selected-template-item" data-id="${selectedTemplate.id}">
-                        <span class="selected-template-name">${selectedTemplate.name}</span>
-                        <input type="hidden" name="description_templates[]" value="${selectedTemplate.id}">
-                        <span class="selected-template-remove"><i class="fas fa-times"></i></span>
-                    </div>
-                `;
-
-                $('#selectedTemplates').append(templateHtml);
-
-                // Insert content to editor
-                let templateContent = selectedTemplate.content;
-                templateContent = templateContent.replace(/\[product_name\]/g, $('#name').val() || '[product_name]');
-                templateContent = templateContent.replace(/\[category\]/g, $('#category_id option:selected').text() || '[category]');
-                templateContent = templateContent.replace(/\[price\]/g, 'Rp ' + ($('#display-price').val() || '[price]'));
-
-                // Bersihkan tag kosong di awal/akhir
-                templateContent = cleanEditorContent(templateContent);
-
-                // Append to existing content in editor
-                let currentContent = $('.summernote').summernote('code');
-                currentContent = cleanEditorContent(currentContent);
-                if (currentContent) {
-                    currentContent += '<br>' + templateContent;
-                } else {
-                    currentContent = templateContent;
-                }
-                $('.summernote').summernote('code', currentContent);
-
-                // Close preview
-                $('#templatePreview').hide();
-                $('#templateList').show();
-
-                // Re-render templates to exclude the selected one
-                renderTemplates($('#templateCategory').val());
-
-                selectedTemplate = null;
-            }
-        });
-
-        // Remove selected template
-        $(document).on('click', '.selected-template-remove', function() {
-            const templateItem = $(this).closest('.selected-template-item');
-            const templateId = templateItem.data('id');
-
-            // Remove from DOM
-            templateItem.remove();
-
-            // Re-render templates to include the removed one
-            renderTemplates($('#templateCategory').val());
-        });
-
-        // Show/hide template selector
-        $('#showTemplateSelector').on('click', function() {
-            $('#templateSelectorModal').show();
-        });
-
-        $('#closeTemplateSelector').on('click', function() {
-            $('#templateSelectorModal').hide();
-            $('#templatePreview').hide();
-            $('#templateList').show();
-            selectedTemplate = null;
-        });
-
-        function cleanEditorContent(html) {
-            // Hapus <br>, <p><br></p>, <p></p> di awal dan akhir
-            html = html.replace(/^(<br\s*\/?>|<p><br\s*\/?><\/p>|<p>\s*<\/p>)+/gi, '');
-            html = html.replace(/(<br\s*\/?>|<p><br\s*\/?><\/p>|<p>\s*<\/p>)+$/gi, '');
-            return html.trim();
-        }
     });
 </script>
 @endpush

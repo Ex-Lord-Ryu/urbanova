@@ -7,7 +7,6 @@
                 <li><a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}">Home</a></li>
                 <li><a href="{{ url('/shop') }}" class="{{ request()->is('shop') ? 'active' : '' }}">Shop</a></li>
                 <li><a href="{{ url('/about') }}" class="{{ request()->is('about') ? 'active' : '' }}">About</a></li>
-                <li><a href="{{ url('/contact') }}" class="{{ request()->is('contact') ? 'active' : '' }}">Contact</a>
                 </li>
                 <li>
                     <a href="{{ url('/cart') }}" class="{{ request()->is('cart') ? 'active' : '' }} cart-link">
@@ -29,6 +28,10 @@
                                 class="{{ request()->is('home') ? 'active' : '' }}">Dashboard</a>
                         </li>
                         <li>
+                            <a href="{{ route('landing.profile') }}"
+                                class="{{ request()->is('user/profile/profile*') ? 'active' : '' }}">Profil</a>
+                        </li>
+                        <li>
                             <a href="{{ route('logout') }}"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 Logout
@@ -38,6 +41,14 @@
                             </form>
                         </li>
                     @else
+                        <li>
+                            <a href="{{ route('landing.profile') }}"
+                                class="{{ request()->is('landing/profile*') ? 'active' : '' }}">Profil</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('landing.orders') }}"
+                                class="{{ request()->is('user/orders*') ? 'active' : '' }}">Pesanan Saya</a>
+                        </li>
                         <li>
                             <a href="{{ route('logout') }}"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

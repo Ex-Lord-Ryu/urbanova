@@ -33,6 +33,14 @@ class Size extends Model
     }
 
     /**
+     * Get the product variants that use this size.
+     */
+    public function productVariants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+
+    /**
      * Create a slug from the name.
      */
     protected static function boot()
@@ -41,8 +49,29 @@ class Size extends Model
 
         static::creating(function ($size) {
             if (empty($size->slug)) {
-                $size->slug = Str::slug($size->name);
+                $size->slug = strtolower(str_replace(' ', '_', $size->name));
+            } else {
+                $size->slug = strtolower(str_replace(' ', '_', $size->slug));
             }
         });
+
+        static::updating(function ($size) {
+            if ($size->isDirty('slug')) {
+                $size->slug = strtolower(str_replace(' ', '_', $size->slug));
+            }
+            if ($size->isDirty('name') && empty($size->slug)) {
+                $size->slug = strtolower(str_replace(' ', '_', $size->name));
+            }
+        });
+    }
+
+    /**
+     * Set the size's slug.
+     */
+    protected function setSlugAttribute($value)
+    {
+        if (!empty($value)) {
+            $this->attributes['slug'] = strtolower(str_replace(' ', '_', $value));
+        }
     }
 }

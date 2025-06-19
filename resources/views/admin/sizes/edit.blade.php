@@ -127,16 +127,14 @@
     $(document).ready(function() {
         // Automatic slug generation
         $('#name').on('keyup', function() {
-            if ($('#slug').val() === '{{ $size->slug }}' || $('#slug').val() === '') {
-                const name = $(this).val();
-                const slug = name.toLowerCase()
-                    .replace(/[^\w ]+/g, '')
-                    .replace(/ +/g, '-');
-                $('#slug').val(slug);
+            const name = $(this).val();
+            const slug = name.toLowerCase()
+                .replace(/[^\w ]+/g, '')
+                .replace(/ +/g, '_');
+            $('#slug').val(slug);
 
-                // Update preview
-                updatePreview();
-            }
+            // Update preview
+            updatePreview();
         });
 
         $('#slug').on('input', function() {
@@ -152,15 +150,7 @@
             $('#size_slug_preview').text(slug);
         }
 
-        // Show usage information for currently edited size
-        @if($size->products->count() > 0)
-        const productCount = {{ $size->products->count() }};
-        const productText = productCount === 1 ? '1 produk' : `${productCount} produk`;
-        $('<div class="alert alert-info mt-3">' +
-            '<i class="fas fa-info-circle mr-2"></i> ' +
-            `Ukuran ini digunakan pada ${productText}. Perubahan akan mempengaruhi semua produk terkait.` +
-            '</div>').insertAfter('.card-header');
-        @endif
+        // No product usage information since table doesn't exist yet
     });
 </script>
 @endpush

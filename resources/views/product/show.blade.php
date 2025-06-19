@@ -210,6 +210,74 @@
             background-color: #fff;
             height: 85px;
         }
+
+        /* Color selection styles */
+        .colors-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .color-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .color-option-wrapper {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 12px;
+            margin-bottom: 10px;
+        }
+
+        .color-option {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #ddd !important;
+            transition: all 0.2s;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .color-name {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #555;
+            text-align: center;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: #090969 !important;
+            box-shadow: 0 0 0 2px rgba(9, 9, 105, 0.3);
+        }
+
+        .color-option-wrapper.hidden {
+            display: none;
+        }
+
+        .color-option:after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #090969;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .color-option.active:after {
+            opacity: 1;
+        }
     </style>
 @endpush
 
@@ -268,6 +336,7 @@
                     <form id="add-to-cart-form" action="{{ route('cart.add') }}" method="POST">
                         @csrf
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <input type="hidden" name="variant_id" id="selected-variant-id">
 
                         @if (count($product->sizes) > 0)
                             <div class="sizes-container">
@@ -279,23 +348,55 @@
                                             $sizeName = $sizeObj->name;
                                             $inStock = $product->isSizeInStock($sizeId);
                                             $stockAmount = $product->getStockForSize($sizeId);
+                                            $hasSizeVariants =
+                                                isset($variantsBySizeAndColor[$sizeName]) &&
+                                                count($variantsBySizeAndColor[$sizeName]) > 0;
                                             // Get size-specific price if enabled
                                             $sizePrice =
                                                 $product->has_size_prices && isset($product->size_prices[$sizeName])
                                                     ? $product->size_prices[$sizeName]
                                                     : null;
                                         @endphp
-                                        <label class="size-label {{ !$inStock ? 'out-of-stock' : '' }}"
-                                            title="{{ !$inStock ? 'Stok habis' : 'Tersedia: ' . $stockAmount }}"
+                                        <label class="size-label {{ !$hasSizeVariants ? 'out-of-stock' : '' }}"
+                                            title="{{ !$hasSizeVariants ? 'Stok habis' : 'Tersedia: ' . $stockAmount }}"
                                             data-size="{{ $sizeName }}" data-price="{{ $sizePrice }}"
                                             data-discounted="{{ $product->hasActiveDiscount() ? ($sizePrice ? $sizePrice - ($sizePrice * $product->discount_percentage) / 100 : null) : null }}">
                                             <input type="radio" name="size" value="{{ $sizeName }}"
-                                                style="display:none;" {{ !$inStock ? 'disabled' : '' }}>
-                                            {{ $sizeName }} {{ !$inStock ? '(Habis)' : '' }}
+                                                style="display:none;" {{ !$hasSizeVariants ? 'disabled' : '' }}>
+                                            {{ $sizeName }} {{ !$hasSizeVariants ? '(Habis)' : '' }}
                                         </label>
                                     @endforeach
                                 </div>
                                 <div id="size-error" class="text-danger" style="display:none;">Please select a size</div>
+                            </div>
+                        @endif
+
+                        @if (count($product->colors) > 0)
+                            <div class="colors-container">
+                                <h5>Select Color</h5>
+                                <div class="color-options">
+                                    @php
+                                        $uniqueColors = [];
+                                        foreach ($product->variants as $variant) {
+                                            if ($variant->color && !isset($uniqueColors[$variant->color->id])) {
+                                                $uniqueColors[$variant->color->id] = $variant->color;
+                                            }
+                                        }
+                                    @endphp
+
+                                    @foreach ($uniqueColors as $color)
+                                        <div class="color-option-wrapper hidden" data-color-id="{{ $color->id }}"
+                                            data-color-name="{{ $color->name }}">
+                                            <div class="color-option"
+                                                style="background-color: #{{ $color->code }}; border: 2px solid #ddd;"
+                                                title="{{ $color->name }} ({{ $color->code }})"></div>
+                                            <span class="color-name">{{ $color->name }}</span>
+                                        </div>
+                                    @endforeach
+
+
+                                </div>
+                                <div id="color-error" class="text-danger" style="display:none;">Please select a color</div>
                             </div>
                         @endif
 
@@ -322,7 +423,8 @@
                 </div>
                 @foreach ($relatedProducts as $related)
                     <div class="col-md-3">
-                        <a href="{{ route('product.show', $related->id) }}" style="text-decoration: none; color: inherit;">
+                        <a href="{{ route('product.show', $related->slug) }}"
+                            style="text-decoration: none; color: inherit;">
                             <div class="related-product">
                                 <img src="{{ $related->image ? asset('storage/' . $related->image) : 'https://via.placeholder.com/200' }}"
                                     alt="{{ $related->name }}">
@@ -336,6 +438,11 @@
             </div>
         @endif
     </div>
+
+    <script>
+        // Store variants data for JavaScript usage
+        const variantsBySizeAndColor = @json($variantsBySizeAndColor);
+    </script>
 @endsection
 
 @push('scripts')
@@ -346,8 +453,6 @@
 
             // Thumbnail gallery functionality
             $('.product-thumb').click(function() {
-                console.log('Thumbnail clicked');
-
                 // Update active thumbnail
                 $('.product-thumb').removeClass('active');
                 $(this).addClass('active');
@@ -364,6 +469,12 @@
                 $('.size-label').removeClass('active');
                 $(this).addClass('active');
                 $('#size-error').hide();
+
+                // Get the selected size
+                const selectedSize = $(this).data('size');
+
+                // Update color options based on the selected size
+                updateColorOptions(selectedSize);
 
                 // Update price display based on size
                 if ({{ $product->has_size_prices ? 'true' : 'false' }}) {
@@ -382,7 +493,88 @@
                         }
                     }
                 }
+
+                // Reset color selection
+                $('.color-option').removeClass('active');
+                $('input[name="color"]').prop('checked', false);
+                $('#selected-variant-id').val('');
+
+                // If the selected size has only variants without colors, select it directly
+                const sizeVariants = variantsBySizeAndColor[selectedSize] || [];
+                if (sizeVariants.length === 1 && sizeVariants[0].no_color) {
+                    $('#selected-variant-id').val(sizeVariants[0].variant_id);
+                    // Hide the color selection section as it's not needed
+                    $('.colors-container').hide();
+                } else if ($('.color-option').length > 0 && !$('.color-option.hidden').length) {
+                    // Show the color selection section if there are color options
+                    $('.colors-container').show();
+                }
             });
+
+            // Color selection
+            $(document).on('click', '.color-option-wrapper:not(.hidden)', function() {
+                $('.color-option-wrapper').find('.color-option').removeClass('active');
+                $(this).find('.color-option').addClass('active');
+                $('input[name="color"]').prop('checked', false);
+                $('#color-error').hide();
+
+                // Find the matching variant
+                const selectedSize = $('.size-label.active').data('size');
+                const selectedColorId = $(this).data('color-id');
+
+                if (selectedSize && selectedColorId && variantsBySizeAndColor[selectedSize]) {
+                    const selectedVariant = variantsBySizeAndColor[selectedSize].find(variant =>
+                        variant.color_id === selectedColorId);
+
+                    if (selectedVariant) {
+                        $('#selected-variant-id').val(selectedVariant.variant_id);
+                    }
+                }
+            });
+
+            // Function to show/hide color options based on selected size
+            function updateColorOptions(selectedSize) {
+                // Hide all color options first
+                $('.color-option-wrapper').addClass('hidden');
+
+                // If no size is selected or no variants for this size, don't show any colors
+                if (!selectedSize || !variantsBySizeAndColor[selectedSize]) {
+                    $('.colors-container').hide();
+                    return;
+                }
+
+                // Check if this size has only "no color" variants
+                const sizeVariants = variantsBySizeAndColor[selectedSize];
+
+                if (sizeVariants.length === 1 && sizeVariants[0].no_color) {
+                    $('.colors-container').hide();
+                    return;
+                }
+
+                // Show the color selection section
+                $('.colors-container').show();
+
+                // Show only colors available for the selected size
+                const availableColors = variantsBySizeAndColor[selectedSize].filter(variant => !variant.no_color);
+
+                availableColors.forEach(colorData => {
+                    const colorOption = $(`.color-option-wrapper[data-color-id="${colorData.color_id}"]`);
+                    colorOption.removeClass('hidden');
+
+                    // Force style refresh for the color circle
+                    const colorCircle = colorOption.find('.color-option');
+                    colorCircle.attr('style', '');
+                    setTimeout(() => {
+                        colorCircle.attr('style', `background-color: #${colorData.color_code}; border: 2px solid #ddd;`);
+                    }, 10);
+                });
+
+                // If only one color is available, select it automatically
+                if (availableColors.length === 1) {
+                    const onlyColorOption = $(`.color-option-wrapper[data-color-id="${availableColors[0].color_id}"]`);
+                    onlyColorOption.click();
+                }
+            }
 
             // Format number with thousand separators
             function formatNumber(number) {
@@ -407,14 +599,28 @@
                 e.preventDefault(); // Prevent normal form submission
 
                 // Check if size is selected (if sizes exist)
-                if ($('.size-label').length > 0 && !$('input[name="size"]:checked').val()) {
+                if ($('.size-label').length > 0 && !$('.size-label.active').length) {
                     $('#size-error').show();
                     return false;
                 }
 
+                // Get selected size and its variants
+                const selectedSize = $('.size-label.active').data('size');
+                const sizeVariants = selectedSize ? (variantsBySizeAndColor[selectedSize] || []) : [];
+
+                // Check if color is selected (if colors are required for this size)
+                const needsColorSelection = sizeVariants.length > 0 &&
+                    !(sizeVariants.length === 1 && sizeVariants[0].no_color);
+
+                if (needsColorSelection && $('.color-option-wrapper').length > 0 && !$(
+                        '.color-option.active').length) {
+                    $('#color-error').show();
+                    return false;
+                }
+
                 // Check for out of stock
-                const selectedSize = $('input[name="size"]:checked');
-                if (selectedSize.length > 0 && selectedSize.prop('disabled')) {
+                const selectedSizeLabel = $('.size-label.active');
+                if (selectedSizeLabel.length > 0 && selectedSizeLabel.hasClass('out-of-stock')) {
                     $('#size-error').text('Ukuran ini tidak tersedia stoknya').show();
                     return false;
                 }
@@ -436,7 +642,10 @@
                         // Show success modal
                         $.get('/cart/added-modal', {
                             product_id: {{ $product->id }},
-                            size: $('input[name="size"]:checked').val(),
+                            size: $('.size-label.active').data('size'),
+                            color_id: $('.color-option.active').length ? $(
+                                '.color-option.active').closest(
+                                '.color-option-wrapper').data('color-id') : null,
                             qty: $('#qty').val()
                         }, function(modalHtml) {
                             $('#cartAddedModal').remove();

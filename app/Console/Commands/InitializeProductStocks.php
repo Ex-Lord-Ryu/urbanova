@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Product;
+use App\Models\ProductVariant;
 use Illuminate\Console\Command;
 
 class InitializeProductStocks extends Command
@@ -19,14 +20,14 @@ class InitializeProductStocks extends Command
      *
      * @var string
      */
-    protected $description = 'Initialize size stocks for existing products';
+    protected $description = 'Initialize variant stocks for existing products';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $this->info('Initializing product size stocks...');
+        $this->info('Initializing product variants and stocks...');
 
         $products = Product::has('sizes')->get();
         $bar = $this->output->createProgressBar(count($products));
@@ -37,11 +38,14 @@ class InitializeProductStocks extends Command
             $sizeIds = $product->sizes()->pluck('sizes.id')->toArray();
 
             foreach ($sizeIds as $sizeId) {
-                $existingStock = $product->sizeStocks()->where('size_id', $sizeId)->first();
+                $existingVariant = $product->variants()->where('size_id', $sizeId)->first();
 
-                if (!$existingStock) {
-                    $product->sizeStocks()->create([
+                if (!$existingVariant) {
+                    ProductVariant::create([
+                        'product_id' => $product->id,
                         'size_id' => $sizeId,
+                        'color_id' => null,
+                        'price' => $product->base_price, // Use base price
                         'stock' => $product->stock // Use global stock
                     ]);
 
@@ -54,7 +58,7 @@ class InitializeProductStocks extends Command
 
         $bar->finish();
         $this->newLine();
-        $this->info("Successfully initialized stock for {$totalUpdated} product-size combinations.");
+        $this->info("Successfully initialized {$totalUpdated} product variants with stock.");
 
         return 0;
     }

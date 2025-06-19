@@ -65,6 +65,9 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Ganti Password') }}
                                 </button>
+                                <a href="{{ route('profile.index') }}" class="btn btn-outline-secondary ml-2">
+                                    <i class="fas fa-arrow-left mr-1"></i> Kembali ke Profil
+                                </a>
                             </div>
                         </div>
                     </form>

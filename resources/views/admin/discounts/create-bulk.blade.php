@@ -97,6 +97,7 @@
                                                     @enderror
                                                     <small class="form-text text-muted">Kosongkan jika diskon mulai berlaku
                                                         sekarang</small>
+                                                    <small class="form-text text-info"><i class="fas fa-info-circle"></i> Tanggal mulai akan diterapkan sesuai yang Anda pilih.</small>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label>Tanggal Berakhir</label>
@@ -111,6 +112,8 @@
                                                     @enderror
                                                     <small class="form-text text-muted">Kosongkan jika diskon tidak memiliki
                                                         batas waktu</small>
+                                                    <small class="form-text text-info"><i class="fas fa-info-circle"></i> Tanggal akhir akan otomatis diatur 1 hari setelah tanggal mulai.</small>
+                                                    <small class="form-text text-warning"><i class="fas fa-info-circle"></i> Tanggal akhir akan otomatis disesuaikan jika lebih awal dari tanggal mulai.</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -166,15 +169,69 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Initialize Datepicker with drops option set to "up"
-            $('.datepicker').daterangepicker({
+            // Set initial dates
+            const today = moment().format('YYYY-MM-DD');
+            const tomorrow = moment().add(1, 'days').format('YYYY-MM-DD');
+
+            // Initialize start date picker
+            $('input[name="discount_start_date"]').daterangepicker({
                 singleDatePicker: true,
                 showDropdowns: true,
                 autoApply: true,
-                drops: 'up', // This makes the calendar open above the input
+                drops: 'up',
                 locale: {
                     format: 'YYYY-MM-DD'
                 }
+            });
+
+            // Get current start date value or use today
+            const currentStartDate = $('input[name="discount_start_date"]').val() || today;
+            const dayAfterStart = moment(currentStartDate).add(1, 'days').format('YYYY-MM-DD');
+
+            // Initialize end date picker with a default of exactly 1 day after start date
+            $('input[name="discount_end_date"]').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoApply: true,
+                drops: 'up',
+                startDate: dayAfterStart, // Set default to 1 day after start date
+                locale: {
+                    format: 'YYYY-MM-DD'
+                }
+            });
+
+            // Set initial value for end date (if empty)
+            if (!$('input[name="discount_end_date"]').val()) {
+                $('input[name="discount_end_date"]').val(dayAfterStart);
+            }
+
+            // Auto-set end date when start date is selected
+            $('input[name="discount_start_date"]').on('apply.daterangepicker', function(ev, picker) {
+                const selectedDate = picker.startDate.format('YYYY-MM-DD');
+                const today = moment().format('YYYY-MM-DD');
+
+                // Set end date to one day after start date
+                const nextDay = moment(selectedDate).add(1, 'days').format('YYYY-MM-DD');
+
+                // Update the end date input and reinitialize its daterangepicker
+                const $endDateInput = $('input[name="discount_end_date"]');
+                $endDateInput.val(nextDay);
+
+                // Destroy and reinitialize the end date picker to reflect the new value
+                $endDateInput.data('daterangepicker').remove();
+                $endDateInput.daterangepicker({
+                    singleDatePicker: true,
+                    showDropdowns: true,
+                    autoApply: true,
+                    drops: 'up',
+                    startDate: nextDay,
+                    locale: {
+                        format: 'YYYY-MM-DD'
+                    }
+                });
+
+                // Update summary
+                updateSummary();
             });
 
             // Handle category selection

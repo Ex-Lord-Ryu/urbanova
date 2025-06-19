@@ -72,7 +72,16 @@ class Setting extends Model
         }
 
         if ($this->type === 'array' || $this->type === 'json') {
-            return json_decode($value, true);
+            if (is_array($value)) {
+                return $value;
+            }
+            $decoded = json_decode($value, true);
+            return $decoded !== null ? $decoded : [];
+        }
+
+        if ($this->type === 'html') {
+            // For HTML content, return as is
+            return $value;
         }
 
         return $value;
@@ -86,10 +95,30 @@ class Setting extends Model
         if ($this->type === 'boolean') {
             $this->attributes['value'] = $value ? '1' : '0';
         } else if ($this->type === 'array' || $this->type === 'json') {
-            $this->attributes['value'] = json_encode($value);
+            if (is_array($value)) {
+                $this->attributes['value'] = json_encode($value);
+            } else if (is_string($value) && $this->isValidJson($value)) {
+                $this->attributes['value'] = $value;
+            } else {
+                $this->attributes['value'] = json_encode([]);
+            }
+        } else if ($this->type === 'html') {
+            // For HTML content, store as is
+            $this->attributes['value'] = $value;
         } else {
             $this->attributes['value'] = (string) $value;
         }
+    }
+
+    /**
+     * Check if a string is valid JSON
+     *
+     * @param string $string
+     * @return bool
+     */
+    private function isValidJson($string) {
+        json_decode($string);
+        return json_last_error() === JSON_ERROR_NONE;
     }
 
     /**

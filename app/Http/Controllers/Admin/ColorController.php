@@ -14,7 +14,7 @@ class ColorController extends Controller
      */
     public function index()
     {
-        $colors = Color::withCount('products')->latest()->paginate(10);
+        $colors = Color::latest()->paginate(10);
         return view('admin.colors.index', compact('colors'));
     }
 
@@ -40,10 +40,11 @@ class ColorController extends Controller
 
         $data = $request->all();
 
-        // Handle slug
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['name']);
-        }
+        // Convert name to uppercase
+        $data['name'] = strtoupper($data['name']);
+
+        // Handle slug - if empty, it will be automatically generated in the model
+        // If provided, it will be converted to lowercase in the model
 
         // Format hex_code (ensure no # is included)
         if (isset($data['hex_code']) && !empty($data['hex_code'])) {
@@ -68,7 +69,6 @@ class ColorController extends Controller
      */
     public function edit(Color $color)
     {
-        $color->load('products');
         return view('admin.colors.edit', compact('color'));
     }
 
@@ -86,10 +86,11 @@ class ColorController extends Controller
 
         $data = $request->all();
 
-        // Handle slug
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['name']);
-        }
+        // Convert name to uppercase
+        $data['name'] = strtoupper($data['name']);
+
+        // Handle slug - if empty, it will be automatically generated in the model
+        // If provided, it will be converted to lowercase in the model
 
         // Format hex_code (ensure no # is included)
         if (isset($data['hex_code']) && !empty($data['hex_code'])) {
@@ -106,11 +107,6 @@ class ColorController extends Controller
      */
     public function destroy(Color $color)
     {
-        // Check if color is being used by products
-        if ($color->products()->count() > 0) {
-            return redirect()->back()->with('error', 'Warna tidak dapat dihapus karena masih digunakan oleh produk.');
-        }
-
         $color->delete();
         return redirect()->route('colors.index')->with('success', 'Warna berhasil dihapus');
     }
@@ -128,8 +124,10 @@ class ColorController extends Controller
 
         $data = $request->all();
 
-        // Handle slug
-        $data['slug'] = Str::slug($request->name);
+        // Convert name to uppercase
+        $data['name'] = strtoupper($data['name']);
+
+        // Slug will be automatically generated in the model
 
         // Format hex_code (ensure no # is included)
         if (isset($data['hex_code']) && !empty($data['hex_code'])) {

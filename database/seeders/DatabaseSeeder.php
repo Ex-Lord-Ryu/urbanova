@@ -29,9 +29,13 @@ class DatabaseSeeder extends Seeder
             'role' => 'user',
         ]);
 
-        // Seed the settings
+        // Seed the settings and other data
         $this->call([
             SettingsSeeder::class,
+            CategorySeeder::class,
+            ColorSeeder::class,
+            SizeSeeder::class,
+            DescriptionTemplateSeeder::class,
         ]);
     }
 }

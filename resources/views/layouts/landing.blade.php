@@ -42,7 +42,7 @@
         </div>
 
         <!-- Footer -->
-        @include('components.footer')
+        {{-- @include('components.footer') --}}
     </div>
 
     <!-- jQuery and Popper.js (required for Bootstrap 4) -->

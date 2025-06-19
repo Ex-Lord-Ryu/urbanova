@@ -14,7 +14,7 @@
         <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="{{ route('home') }}">Dashboard</a></div>
             <div class="breadcrumb-item"><a href="{{ route('admin.discounts.index') }}">Diskon</a></div>
-            <div class="breadcrumb-item">Edit Diskon</div>
+            <div class="breadcrumb-item">Edit</div>
         </div>
     </div>
 
@@ -35,11 +35,18 @@
                             @csrf
                             @method('PUT')
 
+                            @php
+                                $activeDiscount = $product->activeDiscount();
+                                $discountPercentage = $activeDiscount ? $activeDiscount->percentage : 0;
+                                $startDate = $activeDiscount && $activeDiscount->start_date ? $activeDiscount->start_date->format('Y-m-d') : null;
+                                $endDate = $activeDiscount && $activeDiscount->end_date ? $activeDiscount->end_date->format('Y-m-d') : null;
+                            @endphp
+
                             <div class="form-group row mb-4">
                                 <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Persentase Diskon <span class="text-danger">*</span></label>
                                 <div class="col-sm-12 col-md-9">
                                     <div class="input-group">
-                                        <input type="number" class="form-control @error('discount_percentage') is-invalid @enderror" name="discount_percentage" step="0.01" min="0" max="100" value="{{ old('discount_percentage', $product->discount_percentage) }}" required>
+                                        <input type="number" class="form-control @error('discount_percentage') is-invalid @enderror" name="discount_percentage" step="0.01" min="0" max="100" value="{{ old('discount_percentage', $discountPercentage) }}" required>
                                         <div class="input-group-append">
                                             <span class="input-group-text">%</span>
                                         </div>
@@ -59,23 +66,26 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <label>Tanggal Mulai</label>
-                                            <input type="text" class="form-control datepicker @error('discount_start_date') is-invalid @enderror" name="discount_start_date" value="{{ old('discount_start_date', optional($product->discount_start_date)->format('Y-m-d')) }}">
+                                            <input type="text" class="form-control datepicker @error('discount_start_date') is-invalid @enderror" name="discount_start_date" value="{{ old('discount_start_date', $startDate) }}">
                                             @error('discount_start_date')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
                                                 </div>
                                             @enderror
                                             <small class="form-text text-muted">Kosongkan jika diskon mulai berlaku sekarang</small>
+                                            <small class="form-text text-info"><i class="fas fa-info-circle"></i> Tanggal mulai akan diterapkan sesuai yang Anda pilih.</small>
                                         </div>
                                         <div class="col-md-6">
                                             <label>Tanggal Berakhir</label>
-                                            <input type="text" class="form-control datepicker @error('discount_end_date') is-invalid @enderror" name="discount_end_date" value="{{ old('discount_end_date', optional($product->discount_end_date)->format('Y-m-d')) }}">
+                                            <input type="text" class="form-control datepicker @error('discount_end_date') is-invalid @enderror" name="discount_end_date" value="{{ old('discount_end_date', $endDate) }}">
                                             @error('discount_end_date')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
                                                 </div>
                                             @enderror
                                             <small class="form-text text-muted">Kosongkan jika diskon tidak memiliki batas waktu</small>
+                                            <small class="form-text text-info"><i class="fas fa-info-circle"></i> Tanggal akhir akan otomatis diatur 1 hari setelah tanggal mulai.</small>
+                                            <small class="form-text text-warning"><i class="fas fa-info-circle"></i> Tanggal akhir akan otomatis disesuaikan jika lebih awal dari tanggal mulai.</small>
                                         </div>
                                     </div>
                                 </div>
@@ -86,9 +96,9 @@
                                 <div class="col-sm-12 col-md-9">
                                     @if($product->hasActiveDiscount())
                                         <div class="badge badge-success mb-2">Diskon Aktif</div>
-                                    @elseif($product->discount_start_date && $product->discount_start_date->isFuture())
+                                    @elseif($activeDiscount && $activeDiscount->start_date && $activeDiscount->start_date->isFuture())
                                         <div class="badge badge-warning mb-2">Menunggu Dimulai</div>
-                                    @elseif($product->discount_end_date && $product->discount_end_date->isPast())
+                                    @elseif($activeDiscount && $activeDiscount->end_date && $activeDiscount->end_date->isPast())
                                         <div class="badge badge-danger mb-2">Diskon Berakhir</div>
                                     @else
                                         <div class="badge badge-secondary mb-2">Tidak Aktif</div>
@@ -159,15 +169,65 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script>
     $(document).ready(function() {
-        // Initialize Datepicker with drops option set to "up"
-        $('.datepicker').daterangepicker({
+        // Set initial dates
+        const today = moment().format('YYYY-MM-DD');
+        const tomorrow = moment().add(1, 'days').format('YYYY-MM-DD');
+
+        // Initialize start date picker
+        $('input[name="discount_start_date"]').daterangepicker({
             singleDatePicker: true,
             showDropdowns: true,
             autoApply: true,
-            drops: 'up', // This makes the calendar open above the input
+            drops: 'up',
             locale: {
                 format: 'YYYY-MM-DD'
             }
+        });
+
+        // Initialize end date picker with a date one day after start date
+        const startDate = $('input[name="discount_start_date"]').val() || today;
+        const nextDayAfterStart = moment(startDate).add(1, 'days').format('YYYY-MM-DD');
+
+        $('input[name="discount_end_date"]').daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            autoApply: true,
+            drops: 'up',
+            startDate: nextDayAfterStart,
+            locale: {
+                format: 'YYYY-MM-DD'
+            }
+        });
+
+        // Set initial value for end date if empty
+        if (!$('input[name="discount_end_date"]').val()) {
+            $('input[name="discount_end_date"]').val(nextDayAfterStart);
+        }
+
+        // Auto-set end date when start date is selected
+        $('input[name="discount_start_date"]').on('apply.daterangepicker', function(ev, picker) {
+            const selectedDate = picker.startDate.format('YYYY-MM-DD');
+            const today = moment().format('YYYY-MM-DD');
+
+            // Set end date to one day after start date
+            const nextDay = moment(selectedDate).add(1, 'days').format('YYYY-MM-DD');
+
+            // Update the end date input and reinitialize its daterangepicker
+            const $endDateInput = $('input[name="discount_end_date"]');
+            $endDateInput.val(nextDay);
+
+            // Destroy and reinitialize the end date picker to reflect the new value
+            $endDateInput.data('daterangepicker').remove();
+            $endDateInput.daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoApply: true,
+                drops: 'up',
+                startDate: nextDay,
+                locale: {
+                    format: 'YYYY-MM-DD'
+                }
+            });
         });
 
         // Update discount preview

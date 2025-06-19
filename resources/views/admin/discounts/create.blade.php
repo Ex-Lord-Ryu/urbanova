@@ -110,6 +110,7 @@
                                                 @enderror
                                                 <small class="form-text text-muted">Kosongkan jika diskon mulai berlaku
                                                     sekarang</small>
+                                                <small class="form-text text-info"><i class="fas fa-info-circle"></i> Tanggal mulai akan diterapkan sesuai yang Anda pilih.</small>
                                             </div>
                                             <div class="col-md-6">
                                                 <label>Tanggal Berakhir</label>
@@ -123,6 +124,8 @@
                                                 @enderror
                                                 <small class="form-text text-muted">Kosongkan jika diskon tidak memiliki
                                                     batas waktu</small>
+                                                <small class="form-text text-info"><i class="fas fa-info-circle"></i> Tanggal akhir akan otomatis diatur 1 hari setelah tanggal mulai.</small>
+                                                <small class="form-text text-warning"><i class="fas fa-info-circle"></i> Tanggal akhir akan otomatis disesuaikan jika lebih awal dari tanggal mulai.</small>
                                             </div>
                                         </div>
                                     </div>
@@ -131,7 +134,7 @@
                                 <div class="form-group row mb-4">
                                     <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
                                     <div class="col-sm-12 col-md-7">
-                                        <button type="button" class="btn btn-primary" onclick="confirmUpdate(event)">Simpan Diskon</button>
+                                        <button type="submit" class="btn btn-primary">Simpan Diskon</button>
                                         <a href="{{ route('admin.discounts.index') }}" class="btn btn-secondary">Batal</a>
                                     </div>
                                 </div>
@@ -156,14 +159,139 @@
             // Initialize Select2
             $('.select2').select2();
 
-            // Initialize Datepicker with drops option set to "up"
-            $('.datepicker').daterangepicker({
+            // Set initial dates
+            const today = moment().format('YYYY-MM-DD');
+            const tomorrow = moment().add(1, 'days').format('YYYY-MM-DD');
+
+            console.log('Initializing date fields', {
+                'today': today,
+                'tomorrow': tomorrow
+            });
+
+            // Initialize start date picker
+            $('input[name="discount_start_date"]').daterangepicker({
                 singleDatePicker: true,
                 showDropdowns: true,
                 autoApply: true,
-                drops: 'up', // This makes the calendar open above the input
+                drops: 'up',
                 locale: {
                     format: 'YYYY-MM-DD'
+                }
+            });
+
+            // Get current start date value or use today
+            const currentStartDate = $('input[name="discount_start_date"]').val() || today;
+            const dayAfterStart = moment(currentStartDate).add(1, 'days').format('YYYY-MM-DD');
+
+            console.log('Setting end date based on start date', {
+                'currentStartDate': currentStartDate,
+                'dayAfterStart': dayAfterStart
+            });
+
+            // Initialize end date picker with a default of exactly 1 day after start date
+            $('input[name="discount_end_date"]').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoApply: true,
+                drops: 'up',
+                startDate: dayAfterStart, // Set default to 1 day after start date
+                locale: {
+                    format: 'YYYY-MM-DD'
+                }
+            });
+
+            // Set initial value for end date (if empty)
+            if (!$('input[name="discount_end_date"]').val()) {
+                $('input[name="discount_end_date"]').val(dayAfterStart);
+            }
+
+            // Set form submission handler
+            $('#discountForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const products = $('#products').val();
+                const discountPercentage = $('input[name="discount_percentage"]').val();
+                const startDate = $('input[name="discount_start_date"]').val();
+                const endDate = $('input[name="discount_end_date"]').val();
+
+                console.log('Form submission data', {
+                    'products': products,
+                    'discountPercentage': discountPercentage,
+                    'startDate': startDate,
+                    'endDate': endDate
+                });
+
+                if (!products || products.length === 0) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Silakan pilih minimal satu produk',
+                        icon: 'error'
+                    });
+                    return false;
+                }
+
+                if (!discountPercentage || discountPercentage <= 0) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Persentase diskon harus lebih dari 0',
+                        icon: 'error'
+                    });
+                    return false;
+                }
+
+                // Form is valid, proceed with submission
+                this.submit();
+            });
+
+            // Auto-set end date when start date is selected
+            $('input[name="discount_start_date"]').on('apply.daterangepicker', function(ev, picker) {
+                const selectedDate = picker.startDate.format('YYYY-MM-DD');
+                const today = moment().format('YYYY-MM-DD');
+
+                // Set end date to one day after start date
+                const nextDay = moment(selectedDate).add(1, 'days').format('YYYY-MM-DD');
+
+                // Update the end date input and reinitialize its daterangepicker
+                const $endDateInput = $('input[name="discount_end_date"]');
+                $endDateInput.val(nextDay);
+
+                // Destroy and reinitialize the end date picker to reflect the new value
+                $endDateInput.data('daterangepicker').remove();
+                $endDateInput.daterangepicker({
+                    singleDatePicker: true,
+                    showDropdowns: true,
+                    autoApply: true,
+                    drops: 'up',
+                    startDate: nextDay,
+                    locale: {
+                        format: 'YYYY-MM-DD'
+                    }
+                });
+
+                // Check if end date needs to be updated
+                const endDate = $endDateInput.val();
+                if (endDate && endDate <= selectedDate) {
+                    Swal.fire({
+                        title: 'Perhatian',
+                        text: 'Tanggal akhir akan otomatis disesuaikan karena tanggal mulai telah diubah.',
+                        icon: 'info',
+                        confirmButtonText: 'Mengerti'
+                    });
+                }
+            });
+
+            // Warning for end date selection
+            $('input[name="discount_end_date"]').on('apply.daterangepicker', function(ev, picker) {
+                const selectedEndDate = picker.startDate.format('YYYY-MM-DD');
+                const startDate = $('input[name="discount_start_date"]').val();
+
+                if (startDate && selectedEndDate <= startDate) {
+                    Swal.fire({
+                        title: 'Perhatian',
+                        text: 'Tanggal akhir akan otomatis disesuaikan karena tidak bisa lebih awal dari tanggal mulai.',
+                        icon: 'info',
+                        confirmButtonText: 'Mengerti'
+                    });
                 }
             });
 

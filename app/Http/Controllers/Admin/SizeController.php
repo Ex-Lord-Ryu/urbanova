@@ -14,7 +14,7 @@ class SizeController extends Controller
      */
     public function index()
     {
-        $sizes = Size::withCount('products')->latest()->paginate(10);
+        $sizes = Size::latest()->paginate(10);
         return view('admin.sizes.index', compact('sizes'));
     }
 
@@ -39,10 +39,11 @@ class SizeController extends Controller
 
         $data = $request->all();
 
-        // Handle slug
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['name']);
-        }
+        // Convert name to uppercase
+        $data['name'] = strtoupper($data['name']);
+
+        // Handle slug - if empty, it will be automatically generated in the model
+        // If provided, it will be converted to lowercase in the model
 
         Size::create($data);
 
@@ -62,7 +63,6 @@ class SizeController extends Controller
      */
     public function edit(Size $size)
     {
-        $size->load('products');
         return view('admin.sizes.edit', compact('size'));
     }
 
@@ -79,10 +79,11 @@ class SizeController extends Controller
 
         $data = $request->all();
 
-        // Handle slug
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['name']);
-        }
+        // Convert name to uppercase
+        $data['name'] = strtoupper($data['name']);
+
+        // Handle slug - if empty, it will be automatically generated in the model
+        // If provided, it will be converted to lowercase in the model
 
         $size->update($data);
 
@@ -94,11 +95,6 @@ class SizeController extends Controller
      */
     public function destroy(Size $size)
     {
-        // Check if size is being used by products
-        if ($size->products()->count() > 0) {
-            return redirect()->back()->with('error', 'Ukuran tidak dapat dihapus karena masih digunakan oleh produk.');
-        }
-
         $size->delete();
         return redirect()->route('sizes.index')->with('success', 'Ukuran berhasil dihapus');
     }
@@ -115,8 +111,10 @@ class SizeController extends Controller
 
         $data = $request->all();
 
-        // Handle slug
-        $data['slug'] = Str::slug($request->name);
+        // Convert name to uppercase
+        $data['name'] = strtoupper($data['name']);
+
+        // Slug will be automatically generated in the model
 
         $size = Size::create($data);
 
